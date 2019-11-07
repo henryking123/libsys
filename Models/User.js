@@ -52,6 +52,9 @@ const userSchema = mongoose.Schema({
 	]
 })
 
+userSchema.set('toObject', { virtuals: true })
+userSchema.set('toJSON', { virtuals: true })
+
 // Virtual property, building the relationship between two properties
 userSchema.virtual('borrowHistory', { ref: 'Ticket', localField: '_id', foreignField: 'borrower' })
 

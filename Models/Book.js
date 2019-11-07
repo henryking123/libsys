@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Ticket = mongoose.model('Ticket')
 
 const bookSchema = new mongoose.Schema({
 	cover: { type: Buffer },
@@ -23,7 +24,8 @@ const bookSchema = new mongoose.Schema({
 		{
 			updatedBy: {
 				type: mongoose.Schema.Types.ObjectId,
-				required: true
+				required: true,
+				ref: 'User'
 			},
 			time: {
 				type: Date,
@@ -32,6 +34,9 @@ const bookSchema = new mongoose.Schema({
 		}
 	]
 })
+
+bookSchema.set('toObject', { virtuals: true })
+bookSchema.set('toJSON', { virtuals: true })
 
 bookSchema.virtual('borrowHistory', { ref: 'Ticket', localField: '_id', foreignField: 'book' })
 
