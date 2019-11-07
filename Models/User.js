@@ -56,7 +56,7 @@ userSchema.set('toObject', { virtuals: true })
 userSchema.set('toJSON', { virtuals: true })
 
 // Virtual property, building the relationship between two properties
-userSchema.virtual('borrowHistory', { ref: 'Ticket', localField: '_id', foreignField: 'borrower' })
+userSchema.virtual('tickets', { ref: 'Ticket', localField: '_id', foreignField: 'borrower' })
 
 // Removing some stuff before sending the user back
 userSchema.methods.toJSON = function() {

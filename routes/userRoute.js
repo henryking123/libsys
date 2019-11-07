@@ -82,9 +82,9 @@ router.patch('/', auth, async (req, res) => {
 // @access 	Admin
 router.delete('/:user_id', auth, admin, async (req, res) => {
 	try {
-		// @todo	Check first if there's an active or pending request
+		// Check first if there's an active or pending request
 		const user = await User.findById(req.params.user_id).populate({
-			path: 'borrowHistory',
+			path: 'tickets',
 			match: {
 				status: { $in: ['pendingBorrow', 'active'] }
 			}
@@ -92,7 +92,7 @@ router.delete('/:user_id', auth, admin, async (req, res) => {
 
 		if (!user) throw new Error('Invalid user.')
 
-		if (user.borrowHistory.length > 0)
+		if (user.tickets.length > 0)
 			throw new Error('User has pending requests or has a book in possession.')
 
 		await user.remove()
@@ -108,9 +108,18 @@ router.delete('/:user_id', auth, admin, async (req, res) => {
 // @access 	Registered User
 router.get('/', auth, async (req, res) => {
 	try {
-		// @todo	List all tickets
+		// List all tickets
 		// @todo	Sort ticket such that pending -> active -> the rest
-		await req.user.populate({ path: 'borrowHistory' }).execPopulate()
+		await req.user
+			.populate({
+				path: 'tickets',
+				select: ['book', 'status', 'from'],
+				populate: {
+					path: 'book',
+					select: ['title']
+				}
+			})
+			.execPopulate()
 		res.send({ user: req.user })
 	} catch (e) {
 		console.error(e.message)

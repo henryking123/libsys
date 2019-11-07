@@ -184,4 +184,31 @@ router.get('/ticket/:ticket_id', auth, admin, async (req, res) => {
 	}
 })
 
+// @route 	POST /cancel/:ticket_id
+// @desc 	 	Cancel ticket
+// @access 	Owner of the ticket
+router.post('/cancel/:ticket_id', auth, async (req, res) => {
+	try {
+		const ticket = await Ticket.findOne({
+			_id: req.params.ticket_id,
+			status: { $in: ['pendingBorrow', 'pendingReturn'] },
+			borrower: req.user._id
+		})
+		if (!ticket) throw new Error('Ticket not valid.')
+
+		if (ticket.status === 'pendingBorrow') {
+			ticket.status = 'cancelled'
+		} else {
+			ticket.status = 'active'
+		}
+
+		await ticket.save()
+
+		res.send({ ticket })
+	} catch (e) {
+		console.error(e.message)
+		res.status(400).send(e.message)
+	}
+})
+
 module.exports = router
