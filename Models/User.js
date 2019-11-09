@@ -49,7 +49,8 @@ const userSchema = mongoose.Schema({
 				required: true
 			}
 		}
-	]
+	],
+	cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }]
 })
 
 userSchema.set('toObject', { virtuals: true })

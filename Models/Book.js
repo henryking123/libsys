@@ -6,7 +6,7 @@ const bookSchema = new mongoose.Schema({
 	title: { type: String, required: true },
 	author: { type: String },
 	description: { type: String },
-	datePublished: { type: Date },
+	yearPublished: { type: Date },
 	quantity: {
 		type: Number,
 		default: 0,
@@ -33,6 +33,7 @@ const bookSchema = new mongoose.Schema({
 			}
 		}
 	]
+	// cart
 })
 
 bookSchema.set('toObject', { virtuals: true })

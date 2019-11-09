@@ -7,7 +7,6 @@ module.exports = async (req, res, next) => {
 	try {
 		// Getting the token from the header
 		const token = req.header('x-auth-token')
-
 		// Verifying the token
 		if (!token) throw new Error()
 

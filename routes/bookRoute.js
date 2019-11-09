@@ -10,12 +10,33 @@ const admin = require('../middleware/admin')
 // @access 	Admin, Students
 router.get('/', auth, async (req, res) => {
 	try {
-		const books = await Book.find({}).select('-description')
+		const books = await Book.find({}).limit(10)
 
-		res.json({ books })
+		res.send(books)
 	} catch (e) {
 		console.error(e.message)
 		res.status(500).send('Server Error')
+	}
+})
+
+// @route 	GET /books/search?search=something
+// @desc 		Get All Books
+// @access 	Admin, Students
+router.get('/search', auth, async (req, res) => {
+	try {
+		const books = await Book.find({
+			$or: [
+				{ title: { $regex: new RegExp(req.query.search), $options: 'i' } },
+				{ author: { $regex: new RegExp(req.query.search), $options: 'i' } }
+			]
+		})
+			.sort({ available: -1 })
+			.limit(10)
+
+		res.send(books)
+	} catch (e) {
+		console.error(e.message)
+		res.status(500).send(e.message)
 	}
 })
 
@@ -33,10 +54,10 @@ router.get('/:book_id', auth, async (req, res) => {
 				.populate({
 					path: 'borrowHistory',
 					select: ['borrower', 'from', 'to', 'status'],
-					options: {
-						// @todo	Sort by status
-						sort: { status: -1 }
-					},
+					// options: {
+					// @todo	Sort by status
+					// 	sort: { status: -1 }
+					// },
 					populate: {
 						path: 'borrower',
 						select: ['name', 'email', 'studentId', 'employeeId', 'isAdmin']
@@ -45,7 +66,7 @@ router.get('/:book_id', auth, async (req, res) => {
 		}
 
 		if (!book) throw new Error('Book not found.')
-		res.json({ book })
+		res.json(book)
 	} catch (e) {
 		console.error(e.message)
 		res.status(500).send(e.message)
@@ -58,7 +79,6 @@ router.get('/:book_id', auth, async (req, res) => {
 router.post('/', auth, admin, async (req, res) => {
 	try {
 		const book = new Book(req.body)
-		if (!book) throw new Error('Book not found.')
 
 		book.editHistory = [{ updatedBy: req.user.id }]
 		await book.save()
@@ -75,7 +95,7 @@ router.post('/', auth, admin, async (req, res) => {
 // @access 	Admin
 router.patch('/:book_id', auth, admin, async (req, res) => {
 	const updates = Object.keys(req.body)
-	const allowedUpdates = ['title', 'author', 'datePublished', 'description', 'quantity']
+	const allowedUpdates = ['title', 'author', 'yearPublished', 'description', 'quantity']
 	const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
 	if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates.' })

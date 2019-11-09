@@ -6,6 +6,21 @@ const admin = require('../middleware/admin')
 const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
 
+// @route 	POST /cart/:book_id
+// @desc 	 	Adding something to cart
+// @access 	Student, Admin
+router.post('/cart/:book_id', auth, async (req, res) => {
+	try {
+		// Push to cart array
+		req.user.cart.push(book_id)
+		await req.user.save()
+		res.send(req.user)
+	} catch (e) {
+		console.error(e.message)
+		res.status(500).send(e.message)
+	}
+})
+
 // @route 	POST /borrow/:book_id
 // @desc 	 	Issue a borrow request
 // @access 	Student, Admin
@@ -55,6 +70,7 @@ router.post('/borrow/:ticket_id/accept', auth, admin, async (req, res) => {
 			time: Date.now()
 		})
 		// Remove one from available books
+		// @todo	Book has to be available
 		const book = await Book.findById(ticket.book)
 		book.available -= 1
 		await book.save()
@@ -133,6 +149,7 @@ router.post('/return/:ticket_id/accept', auth, admin, async (req, res) => {
 		// Adds one to the number of available books
 		const book = await Book.findById(ticket.book)
 		book.available += 1
+		// @todo	If book.available = 0, then all pending tickets for book will be declined
 		await book.save()
 		await ticket.save()
 		res.send({ ticket })

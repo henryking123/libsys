@@ -42,6 +42,4 @@ const ticketSchema = new mongoose.Schema(
 	{ timestamps: true }
 )
 
-// Before sending, populate book and borrower fields
-
 mongoose.model('Ticket', ticketSchema)
