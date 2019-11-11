@@ -5,46 +5,25 @@ const User = mongoose.model('User')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
 
-// @route 	POST /user
-// @desc 	 	Register a User
-// @access 	Public
-router.post('/', async (req, res) => {
-	const user = new User(req.body)
-
-	try {
-		const token = await user.generateAuthToken()
-
-		res.json({ user, token })
-	} catch (e) {
-		console.error(e.message)
-		res.status(500).json({ error: e.message })
-	}
-})
-
-// @route 	POST /user/login
-// @desc 	 	Logging in
-// @access 	Public
-router.post('/login', async (req, res) => {
-	try {
-		const user = await User.findByCredentials(req.body.email, req.body.password)
-		const token = await user.generateAuthToken()
-		res.send({ user, token })
-	} catch (e) {
-		console.error(e.message)
-		res.status(500).send(e.message)
-	}
-})
-
-// @route 	POST /user/logout
-// @desc 	 	Logging Out User
+// @route 	GET /user
+// @desc 	 	Get User Details
 // @access 	Registered User
-router.post('/logout', auth, async (req, res) => {
+router.get('/', auth, async (req, res) => {
 	try {
-		req.user.tokens = req.user.tokens.filter((token) => token.token !== req.token)
-
-		await req.user.save()
-
-		res.send()
+		// List all tickets
+		// @todo	Sort ticket such that pending -> active -> the rest
+		await req.user
+			.populate({
+				path: 'tickets',
+				select: ['book', 'status', 'from'],
+				populate: {
+					path: 'book',
+					select: ['title']
+				}
+			})
+			.populate({ path: 'cart', select: ['title', 'author', 'yearPublished', 'available'] })
+			.execPopulate()
+		res.send({ user: req.user })
 	} catch (e) {
 		console.error(e.message)
 		res.status(500).send(e.message)
@@ -97,30 +76,6 @@ router.delete('/:user_id', auth, admin, async (req, res) => {
 
 		await user.remove()
 		res.send({ user })
-	} catch (e) {
-		console.error(e.message)
-		res.status(500).send(e.message)
-	}
-})
-
-// @route 	GET /user
-// @desc 	 	Get User Details
-// @access 	Registered User
-router.get('/', auth, async (req, res) => {
-	try {
-		// List all tickets
-		// @todo	Sort ticket such that pending -> active -> the rest
-		await req.user
-			.populate({
-				path: 'tickets',
-				select: ['book', 'status', 'from'],
-				populate: {
-					path: 'book',
-					select: ['title']
-				}
-			})
-			.execPopulate()
-		res.send({ user: req.user })
 	} catch (e) {
 		console.error(e.message)
 		res.status(500).send(e.message)

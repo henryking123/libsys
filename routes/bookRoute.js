@@ -32,11 +32,11 @@ router.get('/search', auth, async (req, res) => {
 		})
 			.sort({ available: -1 })
 			.limit(10)
-
+		if (!books) res.send()
 		res.send(books)
 	} catch (e) {
 		console.error(e.message)
-		res.status(500).send(e.message)
+		res.status(400).send(e.message)
 	}
 })
 
@@ -54,10 +54,6 @@ router.get('/:book_id', auth, async (req, res) => {
 				.populate({
 					path: 'borrowHistory',
 					select: ['borrower', 'from', 'to', 'status'],
-					// options: {
-					// @todo	Sort by status
-					// 	sort: { status: -1 }
-					// },
 					populate: {
 						path: 'borrower',
 						select: ['name', 'email', 'studentId', 'employeeId', 'isAdmin']

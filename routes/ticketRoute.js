@@ -11,13 +11,16 @@ const Book = mongoose.model('Book')
 // @access 	Student, Admin
 router.post('/cart/:book_id', auth, async (req, res) => {
 	try {
+		// See if currently in cart
+		const found = req.user.cart.some((book) => book.toString() === req.params.book_id)
+		if (found) throw new Error('Book is already in cart')
 		// Push to cart array
-		req.user.cart.push(book_id)
+		req.user.cart.push(req.params.book_id)
 		await req.user.save()
 		res.send(req.user)
 	} catch (e) {
 		console.error(e.message)
-		res.status(500).send(e.message)
+		res.status(400).send(e.message)
 	}
 })
 
@@ -72,6 +75,7 @@ router.post('/borrow/:ticket_id/accept', auth, admin, async (req, res) => {
 		// Remove one from available books
 		// @todo	Book has to be available
 		const book = await Book.findById(ticket.book)
+		// @todo	If book.available = 0, then all pending tickets for book will be declined
 		book.available -= 1
 		await book.save()
 		await ticket.save()
@@ -149,7 +153,6 @@ router.post('/return/:ticket_id/accept', auth, admin, async (req, res) => {
 		// Adds one to the number of available books
 		const book = await Book.findById(ticket.book)
 		book.available += 1
-		// @todo	If book.available = 0, then all pending tickets for book will be declined
 		await book.save()
 		await ticket.save()
 		res.send({ ticket })

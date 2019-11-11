@@ -1,65 +1,58 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import { Button, Icon, Item, Label } from 'semantic-ui-react'
+import moment from 'moment'
+import PropTypes from 'prop-types'
 
-// Translate into semantic-ui-react
-
+// Change the button of those that are already in cart or already in tickets
 class List extends Component {
-	state = { loading: false }
-
 	addToCart = async (_id) => {
 		await axios.post(`/cart/${_id}`)
 	}
 
 	render() {
 		return (
-			<div className="ui items">
-				{this.props.books.map(({ title, author, datePublished, available, description, _id }) => (
-					<div className="item" key={_id}>
-						<div className="image">
-							<img
-								src="https://kbimages1-a.akamaihd.net/52c896b6-2750-4c3d-a844-0760f23117f9/353/569/90/False/how-to-study-smart-study-secrets-of-an-honors-student.jpg"
-								style={{ height: '175px', width: 'auto', margin: 'auto' }}
-								alt={title}
-							/>
-						</div>
-						<div className="middle aligned content">
-							<a className="header" href="!#">
-								{title}
-							</a>
-							<div className="meta">
-								<span>{author}</span>
-								<span>{datePublished}</span>
-							</div>
-							<div className="description">
-								<p>
-									{description || (
-										<React.Fragment>
-											Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio quod ratione ut
-											consectetur labore atque eveniet ipsa? Omnis blanditiis non eum voluptatum
-											temporibus impedit. Similique labore ab perspiciatis ipsa culpa?
-										</React.Fragment>
-									)}
-								</p>
-							</div>
-							<div className="extra">
-								<div
-									className={`ui right floated primary button ${!available && 'disabled'}`}
-									onClick={() => this.addToCart(_id)}
-								>
-									Add to Cart
-									<i className="right chevron icon"></i>
-								</div>
-								{available === 0 && <div className="ui red label">Not available</div>}
-								{available > 0 && available < 3 && (
-									<div className="ui orange label">Only {available} Left</div>
+			<Item.Group divided>
+				{this.props.books.map(({ title, author, yearPublished, available, description, _id }) => (
+					<Item key={_id}>
+						<Item.Image
+							src="https://kbimages1-a.akamaihd.net/52c896b6-2750-4c3d-a844-0760f23117f9/353/569/90/False/how-to-study-smart-study-secrets-of-an-honors-student.jpg"
+							size="small"
+						/>
+
+						<Item.Content verticalAlign="middle">
+							<Item.Header as="a">{title}</Item.Header>
+
+							<Item.Extra>
+								{(!available && <Label color="red">Not available</Label>) ||
+									(available < 5 && <Label color="orange">Only {available} left</Label>)}
+								{author && <Label>{author}</Label>}
+								{yearPublished && <Label>{moment(yearPublished).format('YYYY')}</Label>}
+								{(!available && (
+									<Button primary disabled floated="right">
+										Add to Cart <Icon name="right chevron" />
+									</Button>
+								)) || (
+									<Button
+										primary
+										floated="right"
+										loading={false}
+										onClick={() => this.addToCart(_id)}
+									>
+										Add to Cart <Icon name="right chevron" />
+									</Button>
 								)}
-							</div>
-						</div>
-					</div>
+							</Item.Extra>
+						</Item.Content>
+					</Item>
 				))}
-			</div>
+			</Item.Group>
 		)
 	}
+}
+
+List.propTypes = {
+	books: PropTypes.array.isRequired
 }
 
 export default List

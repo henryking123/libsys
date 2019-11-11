@@ -1,3 +1,5 @@
+// @todo - Minimum of quantity is quantity - available
+
 import React, { Component } from 'react'
 import { Form } from 'semantic-ui-react'
 import { YearInput } from 'semantic-ui-calendar-react'
@@ -93,6 +95,8 @@ class BookFormEdit extends Component {
 						label="Quantity"
 						type="number"
 						min={0}
+						// @todo For testing
+						// min={this.state.quantity - this.state.available}
 						width={3}
 						name="quantity"
 						onChange={this.handleChange}

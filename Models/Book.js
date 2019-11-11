@@ -1,40 +1,42 @@
 const mongoose = require('mongoose')
 const Ticket = mongoose.model('Ticket')
 
-const bookSchema = new mongoose.Schema({
-	cover: { type: Buffer },
-	title: { type: String, required: true },
-	author: { type: String },
-	description: { type: String },
-	yearPublished: { type: Date },
-	quantity: {
-		type: Number,
-		default: 0,
-		// to save the previous value
-		set: function(quantity) {
-			this.oldQuantity = this.quantity
-			return quantity
-		}
-	},
-	available: {
-		type: Number,
-		default: 0
-	},
-	editHistory: [
-		{
-			updatedBy: {
-				type: mongoose.Schema.Types.ObjectId,
-				required: true,
-				ref: 'User'
-			},
-			time: {
-				type: Date,
-				default: Date.now()
+const bookSchema = new mongoose.Schema(
+	{
+		cover: { type: Buffer },
+		title: { type: String, required: true },
+		author: { type: String },
+		description: { type: String },
+		yearPublished: { type: Date },
+		quantity: {
+			type: Number,
+			default: 0,
+			// to save the previous value
+			set: function(quantity) {
+				this.oldQuantity = this.quantity
+				return quantity
 			}
-		}
-	]
-	// cart
-})
+		},
+		available: {
+			type: Number,
+			default: 0
+		},
+		editHistory: [
+			{
+				updatedBy: {
+					type: mongoose.Schema.Types.ObjectId,
+					required: true,
+					ref: 'User'
+				},
+				time: {
+					type: Date,
+					default: Date.now()
+				}
+			}
+		]
+	},
+	{ timestamps: true }
+)
 
 bookSchema.set('toObject', { virtuals: true })
 bookSchema.set('toJSON', { virtuals: true })

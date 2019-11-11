@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import List from './List'
-
-// Translate to semantic-ui-react
+import { Input } from 'semantic-ui-react'
 
 class Search extends Component {
 	state = { search: '', books: [] }
@@ -23,19 +22,17 @@ class Search extends Component {
 
 	render() {
 		return (
-			<div className="ui right floated">
-				<div className="ui fluid icon input">
-					<input
-						type="text"
-						placeholder="Search title, author, date published..."
-						value={this.state.search}
-						onChange={(e) => this.onChange(e)}
-						name="search"
-					/>
-					<i className="search icon"></i>
-				</div>
+			<React.Fragment>
+				<Input
+					fluid
+					icon="search"
+					placeholder="Search title, author, date published..."
+					value={this.state.search}
+					onChange={(e) => this.onChange(e)}
+					name="search"
+				/>
 				<List books={this.state.books} />
-			</div>
+			</React.Fragment>
 		)
 	}
 }
