@@ -21,7 +21,6 @@ router.get('/', auth, async (req, res) => {
 					select: ['title']
 				}
 			})
-			.populate({ path: 'cart', select: ['title', 'author', 'yearPublished', 'available'] })
 			.execPopulate()
 		res.send({ user: req.user })
 	} catch (e) {

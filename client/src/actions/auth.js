@@ -11,6 +11,7 @@ import {
 import setAuthHeader from '../utils/setAuthHeader'
 import axios from 'axios'
 import { setAlert } from './alert'
+import { loadCart } from './cart'
 
 // Loading User
 export const loadUser = () => async (dispatch) => {
@@ -21,6 +22,8 @@ export const loadUser = () => async (dispatch) => {
 		const res = await axios.get('/user')
 
 		dispatch({ type: USER_LOADED, payload: res.data })
+		// Get User's Cart
+		dispatch(loadCart())
 	} catch (e) {
 		dispatch({ type: AUTH_ERROR })
 	}
@@ -38,6 +41,8 @@ export const registerUser = (newUser) => async (dispatch) => {
 		dispatch({ type: REGISTER_SUCCESS, payload: res.data })
 
 		setAuthHeader(localStorage.token)
+		// Get User's Cart
+		dispatch(loadCart())
 	} catch (e) {
 		dispatch(setAlert({ header: 'Registration failed.', content: e.response.data }, 'negative'))
 		dispatch({ type: REGISTER_FAIL })
@@ -55,6 +60,9 @@ export const loginUser = (user) => async (dispatch) => {
 		dispatch({ type: LOGIN_SUCCESS, payload: res.data })
 
 		setAuthHeader(localStorage.token)
+
+		// Get User's Cart
+		dispatch(loadCart())
 	} catch (e) {
 		dispatch(setAlert({ header: 'Login failed.', content: e.response.data }, 'negative'))
 		dispatch({ type: LOGIN_FAIL })
@@ -66,6 +74,8 @@ export const logoutUser = () => async (dispatch) => {
 	try {
 		await axios.get('/logout')
 		dispatch({ type: LOGOUT_USER })
+
+		// Get rid of User's cart in Redux
 	} catch (e) {
 		console.error(e.message)
 	}
@@ -76,6 +86,8 @@ export const logoutAll = () => async (dispatch) => {
 	try {
 		await axios.get('/logoutAll')
 		dispatch({ type: LOGOUT_USER })
+
+		// Get rid of User's cart in Redux
 	} catch (e) {
 		console.error(e.message)
 	}

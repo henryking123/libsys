@@ -6,8 +6,9 @@ import { Input } from 'semantic-ui-react'
 class Search extends Component {
 	state = { search: '', books: [] }
 
-	componentDidMount() {
-		this.search()
+	async componentDidMount() {
+		const res = await axios.get(`/books`)
+		await this.setState({ books: res.data })
 	}
 
 	async onChange(e) {

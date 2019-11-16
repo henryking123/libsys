@@ -52,9 +52,10 @@ class Login extends Component {
 					<Icon name="help" />
 					Don't have an account? <Link to="/register">Register here</Link> instead.
 				</Message>
-				<Button color="red" onClick={this.props.logoutAll}>
+				{/* For testing */}
+				{/* <Button color="red" onClick={this.props.logoutAll}>
 					Logout
-				</Button>
+				</Button> */}
 			</React.Fragment>
 		)
 	}

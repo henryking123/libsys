@@ -17,6 +17,10 @@ import BookFormEdit from './components/book/BookFormEdit'
 import Register from './components/auth/Register'
 import Login from './components/auth/Login'
 import Alert from './components/layouts/Alert'
+import Cart from './components/cart/Cart'
+
+// So even before app loads, header is already loaded
+if (localStorage.token) setAuthHeader(localStorage.token)
 
 const App = () => {
 	useEffect(() => {
@@ -34,6 +38,7 @@ const App = () => {
 						<Route exact path="/register" component={Register} />
 						<Route exact path="/login" component={Login} />
 						<PrivateRoute path="/books/search" component={Search} />
+						<PrivateRoute path="/cart" component={Cart} />
 						<AdminRoute exact path="/books/add" component={BookForm} />
 						<AdminRoute exact path="/books/:book_id/edit" component={BookFormEdit} />
 					</Switch>

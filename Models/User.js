@@ -4,54 +4,57 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { jwtSecret } = require('../config/keys')
 
-const userSchema = mongoose.Schema({
-	name: {
-		type: String,
-		required: true
-	},
-	isAdmin: {
-		type: Boolean,
-		required: true,
-		default: false
-	},
-	studentId: {
-		type: String,
-		default: null
-	},
-	employeeId: {
-		type: String,
-		default: null
-	},
-	email: {
-		type: String,
-		unique: true,
-		required: true,
-		trim: true,
-		lowercase: true,
-		validate(value) {
-			if (!validator.isEmail(value)) throw new Error('Email is invalid.')
-		}
-	},
-	password: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: 7,
-		validate(value) {
-			if (value.toLowerCase().includes('password'))
-				throw new Error('Password must not include "password".')
-		}
-	},
-	tokens: [
-		{
-			token: {
-				type: String,
-				required: true
+const userSchema = mongoose.Schema(
+	{
+		name: {
+			type: String,
+			required: true
+		},
+		isAdmin: {
+			type: Boolean,
+			required: true,
+			default: false
+		},
+		studentId: {
+			type: String,
+			default: null
+		},
+		employeeId: {
+			type: String,
+			default: null
+		},
+		email: {
+			type: String,
+			unique: true,
+			required: true,
+			trim: true,
+			lowercase: true,
+			validate(value) {
+				if (!validator.isEmail(value)) throw new Error('Email is invalid.')
 			}
-		}
-	],
-	cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }]
-})
+		},
+		password: {
+			type: String,
+			required: true,
+			trim: true,
+			minlength: 7,
+			validate(value) {
+				if (value.toLowerCase().includes('password'))
+					throw new Error('Password must not include "password".')
+			}
+		},
+		tokens: [
+			{
+				token: {
+					type: String,
+					required: true
+				}
+			}
+		],
+		cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }]
+	},
+	{ timestamps: true }
+)
 
 userSchema.set('toObject', { virtuals: true })
 userSchema.set('toJSON', { virtuals: true })
@@ -67,6 +70,8 @@ userSchema.methods.toJSON = function() {
 	// Remove certain things
 	delete userObject.password
 	delete userObject.tokens
+	delete userObject.cart
+	delete userObject.tickets
 
 	if (userObject.isAdmin) {
 		delete userObject.studentId

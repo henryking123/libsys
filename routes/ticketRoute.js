@@ -6,24 +6,6 @@ const admin = require('../middleware/admin')
 const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
 
-// @route 	POST /cart/:book_id
-// @desc 	 	Adding something to cart
-// @access 	Student, Admin
-router.post('/cart/:book_id', auth, async (req, res) => {
-	try {
-		// See if currently in cart
-		const found = req.user.cart.some((book) => book.toString() === req.params.book_id)
-		if (found) throw new Error('Book is already in cart')
-		// Push to cart array
-		req.user.cart.push(req.params.book_id)
-		await req.user.save()
-		res.send(req.user)
-	} catch (e) {
-		console.error(e.message)
-		res.status(400).send(e.message)
-	}
-})
-
 // @route 	POST /borrow/:book_id
 // @desc 	 	Issue a borrow request
 // @access 	Student, Admin
