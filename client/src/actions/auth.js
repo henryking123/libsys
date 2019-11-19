@@ -6,7 +6,8 @@ import {
 	LOGIN_FAIL,
 	LOGIN_SUCCESS,
 	LOGOUT_USER,
-	NO_USER
+	NO_USER,
+	EMPTY_CART
 } from './types'
 import setAuthHeader from '../utils/setAuthHeader'
 import axios from 'axios'
@@ -74,8 +75,7 @@ export const logoutUser = () => async (dispatch) => {
 	try {
 		await axios.get('/logout')
 		dispatch({ type: LOGOUT_USER })
-
-		// Get rid of User's cart in Redux
+		dispatch({ type: EMPTY_CART })
 	} catch (e) {
 		console.error(e.message)
 	}
@@ -86,8 +86,7 @@ export const logoutAll = () => async (dispatch) => {
 	try {
 		await axios.get('/logoutAll')
 		dispatch({ type: LOGOUT_USER })
-
-		// Get rid of User's cart in Redux
+		dispatch({ type: EMPTY_CART })
 	} catch (e) {
 		console.error(e.message)
 	}

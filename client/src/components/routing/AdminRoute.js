@@ -26,8 +26,8 @@ const AdminRoute = ({ component: Component, isAuthenticated, loading, user, ...r
 }
 
 AdminRoute.propTypes = {
-	user: PropTypes.object.isRequired,
-	isAuthenticated: PropTypes.bool.isRequired,
+	user: PropTypes.object,
+	isAuthenticated: PropTypes.bool,
 	loading: PropTypes.bool.isRequired
 }
 

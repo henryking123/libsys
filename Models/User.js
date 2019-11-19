@@ -51,7 +51,7 @@ const userSchema = mongoose.Schema(
 				}
 			}
 		],
-		cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }]
+		cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [], autopopulate: true }]
 	},
 	{ timestamps: true }
 )
@@ -97,9 +97,10 @@ userSchema.methods.generateAuthToken = async function() {
 userSchema.pre('save', async function(next) {
 	const user = this
 	if (user.isModified('password')) user.password = await bcrypt.hash(user.password, 8)
-
 	next()
 })
+
+userSchema.plugin(require('mongoose-autopopulate'))
 
 // Static Method - accessible by User.findByCredentials
 userSchema.statics.findByCredentials = async (email, password) => {

@@ -3,7 +3,7 @@ import { Button, Icon, Item, Label } from 'semantic-ui-react'
 import moment from 'moment'
 // Redux
 import PropTypes from 'prop-types'
-import { addToCart } from '../../actions/cart'
+import { addToCart, removeFromCart } from '../../actions/cart'
 import { connect } from 'react-redux'
 
 // Change the button of those that are already in cart or already in tickets
@@ -27,8 +27,8 @@ class List extends Component {
 								{author && <Label>{author}</Label>}
 								{yearPublished && <Label>{moment(yearPublished).format('YYYY')}</Label>}
 								{(this.props.cart.some((cart) => cart._id === _id) && (
-									<Button positive floated="right">
-										In Cart <Icon name="right shopping cart" />
+									<Button negative floated="right" onClick={() => this.props.removeFromCart(_id)}>
+										Remove from Cart <Icon name="trash" style={{ marginLeft: '5px' }} />
 									</Button>
 								)) ||
 									(!available && (
@@ -57,12 +57,10 @@ class List extends Component {
 List.propTypes = {
 	books: PropTypes.array.isRequired,
 	addToCart: PropTypes.func.isRequired,
-	cart: PropTypes.object
+	removeFromCart: PropTypes.func.isRequired,
+	cart: PropTypes.array
 }
 
 const mapStateToProps = ({ cart }) => ({ cart })
 
-export default connect(
-	mapStateToProps,
-	{ addToCart }
-)(List)
+export default connect(mapStateToProps, { addToCart, removeFromCart })(List)

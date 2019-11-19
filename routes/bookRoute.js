@@ -10,7 +10,9 @@ const admin = require('../middleware/admin')
 // @access 	Admin, Students
 router.get('/', auth, async (req, res) => {
 	try {
-		const books = await Book.find({}).limit(10)
+		const books = await Book.find({})
+			.sort({ updatedAt: -1 })
+			.limit(10)
 
 		res.send(books)
 	} catch (e) {
@@ -30,7 +32,7 @@ router.get('/search', auth, async (req, res) => {
 				{ author: { $regex: new RegExp(req.query.search), $options: 'i' } }
 			]
 		})
-			.sort({ available: -1 })
+			.sort({ updatedAt: -1 })
 			.limit(10)
 		if (!books) res.send()
 		res.send(books)

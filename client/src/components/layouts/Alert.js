@@ -10,7 +10,7 @@ const Alert = ({ alerts }) =>
 		const alertType = { [alert.alertType]: true }
 
 		return (
-			<Message {...alertType}>
+			<Message {...alertType} key={alert.id}>
 				<Message.Header>{alert.msg.header !== null && alert.msg.header}</Message.Header>
 				<p>{alert.msg.content}</p>
 			</Message>

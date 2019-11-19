@@ -1,4 +1,4 @@
-import { ADD_TO_CART, REMOVE_FROM_CART, LOAD_CART } from './types'
+import { ADD_TO_CART, REMOVE_FROM_CART, LOAD_CART, CHECKOUT } from './types'
 import { setAlert } from './alert'
 import axios from 'axios'
 
@@ -25,7 +25,6 @@ export const addToCart = (id) => async (dispatch) => {
 	}
 }
 
-// Untested
 export const removeFromCart = (id) => async (dispatch) => {
 	try {
 		const config = { headers: { 'Content-Type': 'application/json' } }
@@ -36,5 +35,22 @@ export const removeFromCart = (id) => async (dispatch) => {
 		dispatch(setAlert({ header: 'Book has been removed from cart.' }, 'positive'))
 	} catch (e) {
 		dispatch(setAlert({ header: 'Error removing item from cart.', content: e.message }, 'negative'))
+	}
+}
+
+export const borrowBooks = ({ checkoutItems, history }) => async (dispatch) => {
+	try {
+		const config = { headers: { 'Content-Type': 'application/json' } }
+		const body = JSON.stringify({ checkoutItems })
+		const res = await axios.post('/borrow', body, config)
+
+		// In Reducer, this should remove items in array
+		dispatch({ type: CHECKOUT, payload: res.data })
+
+		history.push('/tickets')
+	} catch (e) {
+		// If the user still has the book, show an error listing which books are they
+		console.log(e)
+		dispatch(setAlert({ header: 'Error borrowing books.', content: e.response.data }, 'negative'))
 	}
 }

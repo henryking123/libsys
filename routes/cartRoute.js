@@ -7,13 +7,10 @@ const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
 
 // @route 	GET /cart
-// @desc 	 	Adding something to cart
+// @desc 	 	List user's cart
 // @access 	Student, Admin
 router.get('/cart', auth, async (req, res) => {
 	try {
-		await req.user
-			.populate({ path: 'cart', select: ['title', 'author', 'yearPublished', 'available'] })
-			.execPopulate()
 		res.send(req.user.cart)
 	} catch (e) {
 		console.error(e.message)
@@ -32,11 +29,9 @@ router.post('/cart', auth, async (req, res) => {
 			if (found) throw new Error('Book is already in cart')
 		}
 		// Push to cart array
-		req.user.cart.push(req.body.book_id)
+		const book = await Book.findById(req.body.book_id)
+		req.user.cart.push(book)
 		await req.user.save()
-		await req.user
-			.populate({ path: 'cart', select: ['title', 'author', 'yearPublished', 'available'] })
-			.execPopulate()
 		res.send(req.user.cart)
 	} catch (e) {
 		console.error(e.message)
@@ -50,7 +45,7 @@ router.post('/cart', auth, async (req, res) => {
 // Untested
 router.post('/cart/remove', auth, async (req, res) => {
 	try {
-		req.user.cart = req.user.cart.filter(({ _id }) => _id !== req.body.book_id)
+		req.user.cart = req.user.cart.filter(({ _id }) => _id.toString() !== req.body.book_id)
 		await req.user.save()
 		res.send(req.user.cart)
 	} catch (e) {
