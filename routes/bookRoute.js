@@ -5,16 +5,16 @@ const Book = mongoose.model('Book')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
 
-// @route 	GET /books
+// @route 	GET /books/all/:page
 // @desc 		Get All Books
 // @access 	Admin, Students
-router.get('/', auth, async (req, res) => {
+router.get('/all', auth, async (req, res) => {
 	try {
-		const books = await Book.find({})
-			.sort({ updatedAt: -1 })
-			.limit(10)
-
-		res.send(books)
+		const response = await Book.paginate(
+			{},
+			{ sort: { updatedAt: -1 }, limit: 5, page: req.query.page }
+		)
+		res.send(response)
 	} catch (e) {
 		console.error(e.message)
 		res.status(500).send('Server Error')
@@ -26,16 +26,17 @@ router.get('/', auth, async (req, res) => {
 // @access 	Admin, Students
 router.get('/search', auth, async (req, res) => {
 	try {
-		const books = await Book.find({
-			$or: [
-				{ title: { $regex: new RegExp(req.query.search), $options: 'i' } },
-				{ author: { $regex: new RegExp(req.query.search), $options: 'i' } }
-			]
-		})
-			.sort({ updatedAt: -1 })
-			.limit(10)
-		if (!books) res.send()
-		res.send(books)
+		const response = await Book.paginate(
+			{
+				$or: [
+					{ title: { $regex: new RegExp(req.query.search), $options: 'i' } },
+					{ author: { $regex: new RegExp(req.query.search), $options: 'i' } }
+				]
+			},
+			{ sort: { available: -1 }, limit: 5, page: req.query.page }
+		)
+		if (!response) res.send()
+		res.send(response)
 	} catch (e) {
 		console.error(e.message)
 		res.status(400).send(e.message)

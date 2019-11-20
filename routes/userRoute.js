@@ -10,19 +10,22 @@ const admin = require('../middleware/admin')
 // @access 	Registered User
 router.get('/', auth, async (req, res) => {
 	try {
-		// List all tickets
-		// @todo	Sort ticket such that pending -> active -> the rest
-		await req.user
-			.populate({
-				path: 'tickets',
-				select: ['book', 'status', 'from'],
-				populate: {
-					path: 'book',
-					select: ['title']
-				}
-			})
-			.execPopulate()
 		res.send({ user: req.user })
+	} catch (e) {
+		console.error(e.message)
+		res.status(500).send(e.message)
+	}
+})
+
+// @route 	GET /user/:user_id
+// @desc 	 	Get a Specific User Details
+// @access 	Registered User
+router.get('/:user_id', auth, admin, async (req, res) => {
+	try {
+		const user = await User.findById(req.params.user_id)
+		if (!user) throw new Error('User not found.')
+
+		res.send(user)
 	} catch (e) {
 		console.error(e.message)
 		res.status(500).send(e.message)

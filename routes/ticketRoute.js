@@ -6,6 +6,19 @@ const admin = require('../middleware/admin')
 const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
 
+// @route 	GET /tickets/
+// @desc 	 	Get current user's tickets
+// @access 	Admin
+router.get('/tickets', auth, admin, async (req, res) => {
+	try {
+		const tickets = await Ticket.find({ borrower: req.user.id })
+		res.send(tickets)
+	} catch (e) {
+		console.error(e.message)
+		res.status(400).send(e.message)
+	}
+})
+
 // @route 	POST /borrow/
 // @desc 	 	Issue a borrow request from checkout
 // @access 	Student, Admin

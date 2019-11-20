@@ -3,6 +3,7 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { jwtSecret } = require('../config/keys')
+const mongooseAutopopulate = require('mongoose-autopopulate')
 
 const userSchema = mongoose.Schema(
 	{
@@ -60,7 +61,12 @@ userSchema.set('toObject', { virtuals: true })
 userSchema.set('toJSON', { virtuals: true })
 
 // Virtual property, building the relationship between two properties
-userSchema.virtual('tickets', { ref: 'Ticket', localField: '_id', foreignField: 'borrower' })
+userSchema.virtual('tickets', {
+	ref: 'Ticket',
+	localField: '_id',
+	foreignField: 'borrower',
+	autopopulate: true
+})
 
 // Removing some stuff before sending the user back
 userSchema.methods.toJSON = function() {
@@ -71,7 +77,6 @@ userSchema.methods.toJSON = function() {
 	delete userObject.password
 	delete userObject.tokens
 	delete userObject.cart
-	delete userObject.tickets
 
 	if (userObject.isAdmin) {
 		delete userObject.studentId
@@ -100,7 +105,7 @@ userSchema.pre('save', async function(next) {
 	next()
 })
 
-userSchema.plugin(require('mongoose-autopopulate'))
+userSchema.plugin(mongooseAutopopulate)
 
 // Static Method - accessible by User.findByCredentials
 userSchema.statics.findByCredentials = async (email, password) => {

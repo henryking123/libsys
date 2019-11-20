@@ -13,7 +13,7 @@ const Navbar = ({ loading, isAuthenticated, logoutUser }) => {
 	return (
 		<Menu fixed="top" inverted borderless>
 			<Container>
-				<Link to="/books/search">
+				<Link to="/books">
 					<Menu.Item header>
 						<Image size="mini" src="/logo.png" style={{ marginRight: '1.5em' }} />
 						LibSys

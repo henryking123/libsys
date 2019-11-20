@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const Ticket = mongoose.model('Ticket')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const bookSchema = new mongoose.Schema(
 	{
@@ -52,5 +52,7 @@ bookSchema.pre('save', function(next) {
 
 	next()
 })
+
+bookSchema.plugin(mongoosePaginate)
 
 mongoose.model('Book', bookSchema)

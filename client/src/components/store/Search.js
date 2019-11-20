@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import List from './List'
-import { Input } from 'semantic-ui-react'
+import { Input, Icon, Pagination } from 'semantic-ui-react'
 
 class Search extends Component {
-	state = { search: '', books: [] }
+	state = { search: '', data: {}, activePage: 1 }
 
-	async componentDidMount() {
-		const res = await axios.get(`/books`)
-		await this.setState({ books: res.data })
+	componentDidMount = async () => {
+		this.search()
 	}
 
 	async onChange(e) {
@@ -16,12 +15,26 @@ class Search extends Component {
 		this.search()
 	}
 
+	handlePaginationChange = async (e, { activePage }) => {
+		await this.setState({ activePage })
+		this.search()
+	}
+
 	async search() {
-		const res = await axios.get(`/books/search?search=${this.state.search}`)
-		await this.setState({ books: res.data })
+		if (this.state.search === '') {
+			const res = await axios.get(`/books/all?page=${this.state.activePage}`)
+			await this.setState({ data: res.data })
+		} else {
+			const res = await axios.get(
+				`/books/search?search=${this.state.search}&page=${this.state.activePage}`
+			)
+			await this.setState({ data: res.data })
+		}
 	}
 
 	render() {
+		const { data, activePage } = this.state
+
 		return (
 			<React.Fragment>
 				<Input
@@ -32,7 +45,25 @@ class Search extends Component {
 					onChange={(e) => this.onChange(e)}
 					name="search"
 				/>
-				<List books={this.state.books} />
+				{data.docs ? (
+					<React.Fragment>
+						<List books={data.docs} />
+						<Pagination
+							activePage={activePage}
+							ellipsisItem={{ content: <Icon name="ellipsis horizontal" />, icon: true }}
+							firstItem={{ content: <Icon name="angle double left" />, icon: true }}
+							lastItem={{ content: <Icon name="angle double right" />, icon: true }}
+							prevItem={{ content: <Icon name="angle left" />, icon: true }}
+							nextItem={{ content: <Icon name="angle right" />, icon: true }}
+							style={{ marginBottom: '20px' }}
+							totalPages={data.totalPages}
+							onPageChange={this.handlePaginationChange}
+							floated="right"
+						/>
+					</React.Fragment>
+				) : (
+					''
+				)}
 			</React.Fragment>
 		)
 	}
