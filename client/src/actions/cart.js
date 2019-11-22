@@ -1,5 +1,6 @@
 import { ADD_TO_CART, REMOVE_FROM_CART, LOAD_CART, CHECKOUT } from './types'
 import { setAlert } from './alert'
+import { loadUser } from './auth'
 import axios from 'axios'
 
 export const loadCart = () => async (dispatch) => {
@@ -47,7 +48,9 @@ export const borrowBooks = ({ checkoutItems, history }) => async (dispatch) => {
 		// In Reducer, this should remove items in array
 		dispatch({ type: CHECKOUT, payload: res.data })
 
-		history.push('/tickets')
+		// Reload user
+		dispatch(loadUser())
+		history.push('/profile')
 	} catch (e) {
 		// If the user still has the book, show an error listing which books are they
 		console.log(e)

@@ -67,14 +67,16 @@ class Cart extends Component {
 			<Table celled>
 				<Table.Header>
 					<Table.Row>
-						<Table.HeaderCell textAlign="center" width={2}>
+						<Table.HeaderCell textAlign="center" width={1}>
 							<Checkbox
 								label="Select All"
 								onClick={this.selectAll}
 								checked={this.state.selectedAll}
 							/>
 						</Table.HeaderCell>
-						<Table.HeaderCell textAlign="center">Book</Table.HeaderCell>
+						<Table.HeaderCell textAlign="center" width={15}>
+							Book
+						</Table.HeaderCell>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -148,7 +150,8 @@ Cart.propTypes = {
 	loadCart: PropTypes.func.isRequired,
 	removeFromCart: PropTypes.func.isRequired,
 	borrowBooks: PropTypes.func.isRequired,
-	cart: PropTypes.array.isRequired
+	cart: PropTypes.array.isRequired,
+	history: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ cart }) => ({ cart })

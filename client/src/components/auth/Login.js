@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Message, Button, Icon } from 'semantic-ui-react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loginUser, logoutAll } from '../../actions/auth'
 import PropTypes from 'prop-types'
@@ -14,8 +14,10 @@ class Login extends Component {
 
 	onSubmit = (e) => {
 		e.preventDefault()
-
-		this.props.loginUser({ email: this.state.email, password: this.state.password })
+		this.props.loginUser(
+			{ email: this.state.email, password: this.state.password },
+			this.props.history
+		)
 	}
 
 	render() {
@@ -63,12 +65,10 @@ class Login extends Component {
 
 Login.propTypes = {
 	isAuthenticated: PropTypes.bool,
-	loginUser: PropTypes.func.isRequired
+	loginUser: PropTypes.func.isRequired,
+	history: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ auth: { isAuthenticated } }) => ({ isAuthenticated })
 
-export default connect(
-	mapStateToProps,
-	{ loginUser, logoutAll }
-)(Login)
+export default connect(mapStateToProps, { loginUser, logoutAll })(withRouter(Login))

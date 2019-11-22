@@ -31,7 +31,7 @@ export const loadUser = () => async (dispatch) => {
 }
 
 // Register User
-export const registerUser = (newUser) => async (dispatch) => {
+export const registerUser = (newUser, history) => async (dispatch) => {
 	try {
 		const config = { headers: { 'Content-Type': 'application/json' } }
 
@@ -44,6 +44,7 @@ export const registerUser = (newUser) => async (dispatch) => {
 		setAuthHeader(localStorage.token)
 		// Get User's Cart
 		dispatch(loadCart())
+		history.push('/books')
 	} catch (e) {
 		dispatch(setAlert({ header: 'Registration failed.', content: e.response.data }, 'negative'))
 		dispatch({ type: REGISTER_FAIL })
@@ -51,7 +52,7 @@ export const registerUser = (newUser) => async (dispatch) => {
 }
 
 // Logging in User
-export const loginUser = (user) => async (dispatch) => {
+export const loginUser = (user, history) => async (dispatch) => {
 	try {
 		const config = { headers: { 'Content-Type': 'application/json' } }
 		const body = JSON.stringify(user)
@@ -64,6 +65,7 @@ export const loginUser = (user) => async (dispatch) => {
 
 		// Get User's Cart
 		dispatch(loadCart())
+		history.push('/books')
 	} catch (e) {
 		dispatch(setAlert({ header: 'Login failed.', content: e.response.data }, 'negative'))
 		dispatch({ type: LOGIN_FAIL })
@@ -71,22 +73,24 @@ export const loginUser = (user) => async (dispatch) => {
 }
 
 // Logging out User
-export const logoutUser = () => async (dispatch) => {
+export const logoutUser = (history) => async (dispatch) => {
 	try {
 		await axios.get('/logout')
 		dispatch({ type: LOGOUT_USER })
 		dispatch({ type: EMPTY_CART })
+		history.push('/login')
 	} catch (e) {
 		console.error(e.message)
 	}
 }
 
 // Log out of all sessions
-export const logoutAll = () => async (dispatch) => {
+export const logoutAll = (history) => async (dispatch) => {
 	try {
 		await axios.get('/logoutAll')
 		dispatch({ type: LOGOUT_USER })
 		dispatch({ type: EMPTY_CART })
+		history.push('/login')
 	} catch (e) {
 		console.error(e.message)
 	}

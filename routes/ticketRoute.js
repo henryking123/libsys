@@ -19,6 +19,50 @@ router.get('/tickets', auth, admin, async (req, res) => {
 	}
 })
 
+// @route 	GET /tickets/:option
+// @desc 	 	Get tickets
+// @access 	Admin
+router.get('/tickets/:sort_order', auth, admin, async (req, res) => {
+	try {
+		let options = {}
+		switch (req.params.sort_order) {
+			// Backend Routes
+			// > "/tickets/0" (all)
+			// > "/tickets/1" (pickup)
+			// > "/tickets/2" (borrow)
+			// > "/tickets/3" (return)
+			// > "/tickets/4" (active)
+			// > "/tickets/5"  (ended)
+			case '0':
+				options = {}
+				break
+			case '1':
+				options = { sort_order: 1 }
+				break
+			case '2':
+				options = { sort_order: 2 }
+				break
+			case '3':
+				options = { sort_order: 3 }
+				break
+			case '4':
+				options = { sort_order: 4 }
+				break
+			case '5':
+				options = { sort_order: 5 }
+				break
+			default:
+				throw new Error('Invalid argument.')
+		}
+
+		const tickets = await Ticket.find(options).select('-event_logs')
+		res.send(tickets)
+	} catch (e) {
+		console.error(e.message)
+		res.status(500).send(e.message)
+	}
+})
+
 // @route 	POST /borrow/
 // @desc 	 	Issue a borrow request from checkout
 // @access 	Student, Admin
@@ -32,7 +76,7 @@ router.post('/borrow', auth, async (req, res) => {
 		// Check if current user has active ticket for the books
 		const openTicket = await Ticket.find({
 			borrower: req.user._id,
-			statusId: { $lt: 5 },
+			sort_order: { $lt: 5 },
 			book: { $in: req.body.checkoutItems }
 		})
 
@@ -47,10 +91,10 @@ router.post('/borrow', auth, async (req, res) => {
 			const ticket = new Ticket()
 			ticket.book = book_id
 			ticket.borrower = req.user._id
-			ticket.status = 'Pending Borrow'
-			ticket.statusId = 1
+			ticket.status = 'Pending (Borrow)'
+			ticket.sort_order = 2
 			await ticket.save()
-			await ticket.addHistory(ticket.statusId, ticket.status, req.user.id)
+			await ticket.addEventLog('Borrow Request', req.user.id)
 		})
 
 		// Remove books from the Cart

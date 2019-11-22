@@ -11,7 +11,7 @@ const ticketSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
 			ref: 'Book',
-			autopopulate: true
+			autopopulate: { select: ['title', 'author'] }
 		},
 		from: {
 			type: Date
@@ -23,35 +23,43 @@ const ticketSchema = new mongoose.Schema(
 			type: String,
 			required: true
 		},
-		statusId: {
+		sort_order: {
 			type: Number,
 			required: true
-			// > 1 Pending Borrow
-			// > 2 Accepted
-			// > 3 Active
-			// > 4 Pending Return
-			// > 5 Returned
-			// > 6 Expired
-			// > 7 Cancelled Borrow
-			// > 8 Cancelled Return
-			// > 9 Declined Borrow
-			// > 10 Declined Return
+			// Sort_order : Status
+			// 1 : For Pick Up
+			// 2 : Pending (Borrow)
+			// 3 : Pending (Return)
+			// 4 means that user still has the book
+			// 4 : Borrowed
+			// 4 : Cancelled (Return)
+			// 4 : Declined (Return)
+			// 5 means the book has been returned or the transaction never happened
+			// 5 : Cancelled (Borrow)
+			// 5 : Declined (Borrow)
+			// 5 : Expired
+			// 5 : Returned
 		},
-		history: [
+		event_logs: [
 			{
 				status: {
 					type: String,
 					required: true
 				},
-				statusId: {
-					type: Number,
-					required: true
-				},
+				// "Borrow Request" (by User) - user clicks "Borrow Now" on cart (ticket expires in 12 hours, added this in case admin never gets around to accepting or declining the ticket)
+				// "Accepted Borrow Request" (by Admin) - admin prepares the book (ticket expiration gets updated)
+				// "Given to Borrower" (by Admin) - user gets the book
+				// "Return Request" (by User) - user tries to return a book
+				// "Accepted Return Request" (by Admin) - admin gets the book from the student
+				// "Cancelled Borrow Request" (by User) - user can cancel the borrow request
+				// "Cancelled Return Request" (by User) - user can cancel the return request
+				// "Declined Borrow Request" (by Admin) - admin can decline the borrow request
+				// "Declined Return Request" (by Admin) - admin can decline the return request
+				// "Expired" (by System) - tickets can expire
 				by: {
 					type: mongoose.Schema.Types.ObjectId,
-					required: true,
 					ref: 'User',
-					autopopulate: true
+					autopopulate: { select: 'name' }
 				},
 				time: {
 					type: Date,
@@ -63,15 +71,14 @@ const ticketSchema = new mongoose.Schema(
 	{ timestamps: true }
 )
 
-ticketSchema.methods.addHistory = async function(statusId, status, by) {
+ticketSchema.methods.addEventLog = async function(status, by) {
 	try {
 		const ticket = this
 
-		ticket.history.push({ statusId, status, by })
+		ticket.event_logs.push({ status, by })
 		await ticket.save()
 	} catch (e) {
 		console.error(e.message)
-		res.status(500).send(e.message)
 	}
 }
 

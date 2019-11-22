@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Form, Message, Icon, Button } from 'semantic-ui-react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { setAlert } from '../../actions/alert'
 import PropTypes from 'prop-types'
 import { registerUser } from '../../actions/auth'
@@ -29,7 +29,7 @@ class Register extends Component {
 			studentId: this.state.studentId
 		}
 
-		this.props.registerUser(newUser)
+		this.props.registerUser(newUser, this.props.history)
 	}
 
 	render() {
@@ -114,12 +114,10 @@ class Register extends Component {
 Register.propTypes = {
 	isAuthenticated: PropTypes.bool,
 	setAlert: PropTypes.func.isRequired,
-	registerUser: PropTypes.func.isRequired
+	registerUser: PropTypes.func.isRequired,
+	history: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ auth: { isAuthenticated } }) => ({ isAuthenticated })
 
-export default connect(
-	mapStateToProps,
-	{ setAlert, registerUser }
-)(Register)
+export default connect(mapStateToProps, { setAlert, registerUser })(withRouter(Register))

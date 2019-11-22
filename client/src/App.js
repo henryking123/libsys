@@ -19,8 +19,9 @@ import Login from './components/auth/Login'
 import Alert from './components/layouts/Alert'
 import Navbar from './components/layouts/Navbar'
 import Cart from './components/cart/Cart'
-import TicketsList from './components/user/TicketsListTemplate'
 import User from './components/user/User'
+import AllTickets from './components/tickets/AllTickets'
+import UserTickets from './components/tickets/UserTickets'
 
 // So even before app loads, header is already loaded
 if (localStorage.token) setAuthHeader(localStorage.token)
@@ -43,12 +44,14 @@ const App = () => {
 						<Route exact path="/login" component={Login} />
 						<PrivateRoute exact path="/books" component={Search} />
 						<PrivateRoute exact path="/cart" component={Cart} />
-						<PrivateRoute exact path="/tickets" component={TicketsList} />
 						<AdminRoute exact path="/books/add" component={BookForm} />
 						<AdminRoute exact path="/books/:book_id/edit" component={BookFormEdit} />
 
 						<PrivateRoute exact path="/profile" component={User} />
 						<AdminRoute exact path="/profile/:user_id" component={User} />
+
+						<PrivateRoute exact path="/my_tickets" component={UserTickets} />
+						<AdminRoute exact path="/tickets/" component={AllTickets} />
 					</Switch>
 				</div>
 			</Router>
