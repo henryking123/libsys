@@ -67,14 +67,14 @@ class Cart extends Component {
 			<Table celled>
 				<Table.Header>
 					<Table.Row>
-						<Table.HeaderCell textAlign="center" width={1}>
+						<Table.HeaderCell textAlign="center" width={1} singleLine>
 							<Checkbox
 								label="Select All"
 								onClick={this.selectAll}
 								checked={this.state.selectedAll}
 							/>
 						</Table.HeaderCell>
-						<Table.HeaderCell textAlign="center" width={15}>
+						<Table.HeaderCell textAlign="center" colSpan="2">
 							Book
 						</Table.HeaderCell>
 					</Table.Row>
@@ -82,7 +82,7 @@ class Cart extends Component {
 				<Table.Body>
 					{this.props.cart.map(({ title, author, yearPublished, available, _id }) => (
 						<Table.Row key={_id} negative={!available}>
-							<Table.Cell collapsing textAlign="center">
+							<Table.Cell textAlign="center" collapsing>
 								{(!available && (
 									<Label ribbon color="red">
 										Not Available
@@ -106,27 +106,28 @@ class Cart extends Component {
 												{author ? <Label>{author}</Label> : ''}
 												{yearPublished ? <Label>{moment(yearPublished).format('YYYY')}</Label> : ''}
 											</Item.Meta>
-											<Item.Extra>
-												<Button
-													icon="trash alternate"
-													negative
-													floated="right"
-													alt="Remove from Cart"
-													onClick={() => this.props.removeFromCart(_id)}
-												/>
-											</Item.Extra>
+											<Item.Extra></Item.Extra>
 										</Item.Content>
 									</Item>
 								</Item.Group>
+							</Table.Cell>
+							<Table.Cell collapsing>
+								<Button
+									icon="trash alternate"
+									negative
+									alt="Remove from Cart"
+									onClick={() => this.props.removeFromCart(_id)}
+									style={{ margin: '0' }}
+								/>
 							</Table.Cell>
 						</Table.Row>
 					))}
 				</Table.Body>
 
-				<Table.Footer fullWidth>
+				<Table.Footer>
 					<Table.Row>
 						<Table.HeaderCell />
-						<Table.HeaderCell>
+						<Table.HeaderCell colSpan="2">
 							<Button
 								color="green"
 								size="small"
