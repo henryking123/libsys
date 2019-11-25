@@ -52,7 +52,8 @@ const userSchema = mongoose.Schema(
 				}
 			}
 		],
-		cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }]
+		cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }],
+		books: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }]
 	},
 	{ timestamps: true }
 )

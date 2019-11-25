@@ -128,7 +128,7 @@ export class AllTickets extends Component {
 }
 
 AllTickets.propTypes = {
-	setAlert: PropTypes.object.isRequired
+	setAlert: PropTypes.func.isRequired
 }
 
 export default connect(null, { setAlert })(AllTickets)

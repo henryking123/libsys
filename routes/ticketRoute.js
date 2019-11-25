@@ -72,7 +72,6 @@ router.get('/:sort_order', auth, admin, async (req, res) => {
 // @access 	Admin
 router.post('/accept', auth, admin, async (req, res) => {
 	try {
-		// Find the ticket
 		const ticket = await Ticket.findOne({
 			_id: req.body.ticket_id,
 			sort_order: { $in: [1, 2, 3] }
@@ -84,6 +83,8 @@ router.post('/accept', auth, admin, async (req, res) => {
 			ticket.sort_order = 4
 			await ticket.save()
 			await ticket.addEventLog('Given to Borrower', req.user.id)
+			req.user.books.push(ticket.book._id)
+			await req.user.save()
 			res.send({
 				header: 'Ticket has been accepted by admin. Book has been picked up.',
 				content: `${ticket.borrower.name} has successfully borrowed the book titled "${ticket.book.title}".`
@@ -93,6 +94,9 @@ router.post('/accept', auth, admin, async (req, res) => {
 			ticket.sort_order = 1
 			await ticket.save()
 			await ticket.addEventLog('Accepted Borrow Request', req.user.id)
+			const book = await Book.findById(ticket.book._id)
+			book.available -= 1
+			await book.save()
 			res.send({
 				header: 'Borrow ticket has been accepted by admin. Prepare the book for pickup.',
 				content: `Accepted borrow request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
@@ -102,6 +106,13 @@ router.post('/accept', auth, admin, async (req, res) => {
 			ticket.sort_order = 5
 			await ticket.save()
 			await ticket.addEventLog('Accepted Return Request', req.user.id)
+			const book = await Book.findById(ticket.book._id)
+			book.available += 1
+			await book.save()
+			req.user.books = req.user.books.filter(
+				({ _id }) => _id.toString() !== ticket.book._id.toString()
+			)
+			await req.user.save()
 			res.send({
 				header: 'Return ticket has been accepted by admin.',
 				content: `Accepted return request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
@@ -132,6 +143,9 @@ router.post('/decline', auth, admin, async (req, res) => {
 			ticket.sort_order = 5
 			await ticket.save()
 			await ticket.addEventLog('Cancelled Pickup', req.user.id)
+			const book = await Book.findById(ticket.book._id)
+			book.available += 1
+			await book.save()
 			res.send({
 				header: 'Pick up request has been cancelled by admin.',
 				content: `Declined pick up of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`

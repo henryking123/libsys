@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const { jwtSecret } = require('../config/keys')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
+const Ticket = mongoose.model('Ticket')
 
 module.exports = async (req, res, next) => {
 	try {
@@ -11,6 +12,7 @@ module.exports = async (req, res, next) => {
 		if (!token) throw new Error()
 
 		const decoded = jwt.verify(token, jwtSecret)
+		// Finding user and then populating the tickets, cart, and books field
 		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
 			.populate({
 				path: 'tickets',
@@ -20,6 +22,7 @@ module.exports = async (req, res, next) => {
 				]
 			})
 			.populate({ path: 'cart' })
+			.populate({ path: 'books', select: ['title', 'author', 'yearPublished'] })
 
 		if (!user) throw new Error()
 
