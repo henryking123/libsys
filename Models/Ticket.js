@@ -5,7 +5,8 @@ const ticketSchema = new mongoose.Schema(
 		borrower: {
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
-			ref: 'User'
+			ref: 'User',
+			autopopulate: { select: ['name'] }
 		},
 		book: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -27,16 +28,22 @@ const ticketSchema = new mongoose.Schema(
 			type: Number,
 			required: true
 			// Sort_order : Status
-			// 1 : For Pick Up
-			// 2 : Pending (Borrow)
-			// 3 : Pending (Return)
+			// Green
+			// 1 : For Pick Up*
+			// Orange
+			// 2 : Pending (Borrow)*
+			// 3 : Pending (Return)*
+			// Blue
 			// 4 means that user still has the book
-			// 4 : Borrowed
+			// 4 : Borrowed*
 			// 4 : Cancelled (Return)
-			// 4 : Declined (Return)
+			// 4 : Declined (Return)*
+			// Red
 			// 5 means the book has been returned or the transaction never happened
 			// 5 : Cancelled (Borrow)
-			// 5 : Declined (Borrow)
+			// 5 : Cancelled (Pickup)
+			// 5 : Declined (Borrow)*
+			// 5 : Declined (Pickup)*
 			// 5 : Expired
 			// 5 : Returned
 		},
@@ -46,15 +53,17 @@ const ticketSchema = new mongoose.Schema(
 					type: String,
 					required: true
 				},
-				// "Borrow Request" (by User) - user clicks "Borrow Now" on cart (ticket expires in 12 hours, added this in case admin never gets around to accepting or declining the ticket)
-				// "Accepted Borrow Request" (by Admin) - admin prepares the book (ticket expiration gets updated)
-				// "Given to Borrower" (by Admin) - user gets the book
+				// "Borrow Request" (by User) - user clicks "Borrow Now" on cart (ticket expires in 12 hours, added this in case admin never gets around to accepting or declining the ticket)*
+				// "Accepted Borrow Request" (by Admin) - admin prepares the book (ticket expiration gets updated)*
+				// "Given to Borrower" (by Admin) - user gets the book*
 				// "Return Request" (by User) - user tries to return a book
-				// "Accepted Return Request" (by Admin) - admin gets the book from the student
+				// "Accepted Return Request" (by Admin) - admin gets the book from the student*
 				// "Cancelled Borrow Request" (by User) - user can cancel the borrow request
 				// "Cancelled Return Request" (by User) - user can cancel the return request
-				// "Declined Borrow Request" (by Admin) - admin can decline the borrow request
-				// "Declined Return Request" (by Admin) - admin can decline the return request
+				// "Declined Borrow Request" (by Admin) - admin can decline the borrow request*
+				// "Declined Return Request" (by Admin) - admin can decline the return request&
+				// "Cancelled Pickup" (by Admin) - admin can decline the return request*
+				// "Cancelled Pickup" (by User) - admin can decline the return request
 				// "Expired" (by System) - tickets can expire
 				by: {
 					type: mongoose.Schema.Types.ObjectId,

@@ -21,7 +21,7 @@ import Navbar from './components/layouts/Navbar'
 import Cart from './components/cart/Cart'
 import User from './components/user/User'
 import AllTickets from './components/tickets/AllTickets'
-import UserTickets from './components/tickets/UserTickets'
+import UserTickets from './components/user/UserTickets'
 
 // So even before app loads, header is already loaded
 if (localStorage.token) setAuthHeader(localStorage.token)

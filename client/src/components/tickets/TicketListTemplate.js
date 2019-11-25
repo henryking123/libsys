@@ -6,14 +6,31 @@ import PropTypes from 'prop-types'
 class Tickets extends Component {
 	ribbon = (sort_order, status) => {
 		switch (sort_order) {
-			case 2:
+			case 1:
 				return (
 					<Label ribbon color="green">
 						{status}
 					</Label>
 				)
+			case 2:
+			case 3:
+				return (
+					<Label ribbon color="orange">
+						{status}
+					</Label>
+				)
+			case 4:
+				return (
+					<Label ribbon color="blue">
+						{status}
+					</Label>
+				)
 			default:
-				return
+				return (
+					<Label ribbon color="red">
+						{status}
+					</Label>
+				)
 		}
 	}
 
@@ -22,7 +39,7 @@ class Tickets extends Component {
 
 		return (
 			<div>
-				<Table>
+				<Table compact>
 					<Table.Header>
 						<Table.Row>
 							<Table.HeaderCell width={2} textAlign="center">

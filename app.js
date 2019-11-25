@@ -10,7 +10,7 @@ require('./db/mongoose')
 // Routes
 app.use('/user', require('./routes/userRoute'))
 app.use('/books', require('./routes/bookRoute'))
-app.use(require('./routes/ticketRoute'))
+app.use('/tickets', require('./routes/ticketRoute'))
 app.use(require('./routes/authRoute'))
 app.use(require('./routes/cartRoute'))
 

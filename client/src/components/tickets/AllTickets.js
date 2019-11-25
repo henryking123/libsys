@@ -1,12 +1,14 @@
 // For admin listing all tickets
-import React, { Component, createRef } from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, Segment, Sticky, Header, Item, Button, Icon } from 'semantic-ui-react'
+import { Menu, Segment, Header, Item, Button, Icon } from 'semantic-ui-react'
 import axios from 'axios'
+import { connect } from 'react-redux'
+import { setAlert } from '../../actions/alert'
+import PropTypes from 'prop-types'
 
 export class AllTickets extends Component {
 	state = { options: 1, tickets: [] }
-	contextRef = createRef()
 
 	componentDidMount = async () => {
 		const tickets = await this.getTickets(this.state.options)
@@ -16,7 +18,6 @@ export class AllTickets extends Component {
 	handleItemClick = async (e, { value }) => {
 		const tickets = await this.getTickets(value)
 		await this.setState({ options: value, tickets })
-		console.log(this.state.tickets)
 	}
 
 	getTickets = async (options) => {
@@ -25,39 +26,65 @@ export class AllTickets extends Component {
 		return tickets
 	}
 
+	acceptTicket = async (ticket_id) => {
+		try {
+			const res = await axios.post('/tickets/accept', { ticket_id })
+			this.props.setAlert(res.data, 'positive')
+			const tickets = await this.getTickets(this.state.options)
+			await this.setState({ tickets })
+		} catch (e) {
+			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
+		}
+	}
+
+	declineTicket = async (ticket_id) => {
+		try {
+			const res = await axios.post('/tickets/decline', { ticket_id })
+			this.props.setAlert(res.data, 'positive')
+			const tickets = await this.getTickets(this.state.options)
+			await this.setState({ tickets })
+		} catch (e) {
+			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
+		}
+	}
+
 	render() {
 		const { options } = this.state
 
 		return (
-			<div ref={this.contextRef}>
-				<Sticky context={this.contextRef}>
-					<Menu pointing secondary>
-						<Menu.Item
-							onClick={this.handleItemClick}
-							value={1}
-							active={options === 1}
-							name="For Pickup"
-						/>
-						<Menu.Item
-							onClick={this.handleItemClick}
-							value={2}
-							active={options === 2}
-							name="Pending (Borrow)"
-						/>
-						<Menu.Item
-							onClick={this.handleItemClick}
-							value={3}
-							active={options === 3}
-							name="Pending (Return)"
-						/>
-						<Menu.Item
-							onClick={this.handleItemClick}
-							value={0}
-							active={options === 0}
-							name="All Tickets"
-						/>
-					</Menu>
-				</Sticky>
+			<div>
+				<Menu pointing secondary>
+					<Menu.Item
+						onClick={this.handleItemClick}
+						value={1}
+						active={options === 1}
+						name="For Pickup"
+					/>
+					<Menu.Item
+						onClick={this.handleItemClick}
+						value={2}
+						active={options === 2}
+						name="Pending (Borrow)"
+					/>
+					<Menu.Item
+						onClick={this.handleItemClick}
+						value={3}
+						active={options === 3}
+						name="Pending (Return)"
+					/>
+					<Menu.Item
+						onClick={this.handleItemClick}
+						value={4}
+						active={options === 4}
+						name="Active"
+					/>
+					<Menu.Item
+						onClick={this.handleItemClick}
+						value={0}
+						active={options === 0}
+						name="All Tickets"
+					/>
+				</Menu>
 				<Segment>
 					<Item.Group divided>
 						{this.state.tickets.map(
@@ -77,12 +104,12 @@ export class AllTickets extends Component {
 										<Item.Meta>
 											<em>{status}</em>
 										</Item.Meta>
-										{sort_order === 2 || sort_order === 3 ? (
+										{sort_order === 1 || sort_order === 2 || sort_order === 3 ? (
 											<Item.Extra>
-												<Button positive floated="left">
+												<Button positive floated="left" onClick={() => this.acceptTicket(_id)}>
 													<Icon name="check" /> Accept
 												</Button>
-												<Button negative floated="left">
+												<Button negative floated="left" onClick={() => this.declineTicket(_id)}>
 													<Icon name="close" /> Decline
 												</Button>
 											</Item.Extra>
@@ -100,4 +127,8 @@ export class AllTickets extends Component {
 	}
 }
 
-export default AllTickets
+AllTickets.propTypes = {
+	setAlert: PropTypes.object.isRequired
+}
+
+export default connect(null, { setAlert })(AllTickets)

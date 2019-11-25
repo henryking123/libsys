@@ -9,7 +9,7 @@ const Book = mongoose.model('Book')
 // @route 	GET /tickets/
 // @desc 	 	Get current user's tickets
 // @access 	Admin
-router.get('/tickets', auth, admin, async (req, res) => {
+router.get('/', auth, admin, async (req, res) => {
 	try {
 		const tickets = await Ticket.find({ borrower: req.user.id })
 		res.send(tickets)
@@ -22,7 +22,7 @@ router.get('/tickets', auth, admin, async (req, res) => {
 // @route 	GET /tickets/:option
 // @desc 	 	Get tickets
 // @access 	Admin
-router.get('/tickets/:sort_order', auth, admin, async (req, res) => {
+router.get('/:sort_order', auth, admin, async (req, res) => {
 	try {
 		let options = {}
 		switch (req.params.sort_order) {
@@ -58,8 +58,105 @@ router.get('/tickets/:sort_order', auth, admin, async (req, res) => {
 		const tickets = await Ticket.find(options)
 			.select('-event_logs')
 			.populate({ path: 'borrower', select: 'name' })
+			.sort({ sort_order: 1, updatedAt: -1 })
 			.limit(10)
 		res.send(tickets)
+	} catch (e) {
+		console.error(e.message)
+		res.status(500).send(e.message)
+	}
+})
+
+// @route 	POST /accept
+// @desc 	 	Accepting a borrow/return/pickup request
+// @access 	Admin
+router.post('/accept', auth, admin, async (req, res) => {
+	try {
+		// Find the ticket
+		const ticket = await Ticket.findOne({
+			_id: req.body.ticket_id,
+			sort_order: { $in: [1, 2, 3] }
+		})
+		if (!ticket) throw new Error('Ticket not valid')
+
+		if (ticket.sort_order === 1) {
+			ticket.status = 'Borrowed'
+			ticket.sort_order = 4
+			await ticket.save()
+			await ticket.addEventLog('Given to Borrower', req.user.id)
+			res.send({
+				header: 'Ticket has been accepted by admin. Book has been picked up.',
+				content: `${ticket.borrower.name} has successfully borrowed the book titled "${ticket.book.title}".`
+			})
+		} else if (ticket.sort_order === 2) {
+			ticket.status = 'For Pick Up'
+			ticket.sort_order = 1
+			await ticket.save()
+			await ticket.addEventLog('Accepted Borrow Request', req.user.id)
+			res.send({
+				header: 'Borrow ticket has been accepted by admin. Prepare the book for pickup.',
+				content: `Accepted borrow request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
+			})
+		} else if (ticket.sort_order === 3) {
+			ticket.status = 'Returned'
+			ticket.sort_order = 5
+			await ticket.save()
+			await ticket.addEventLog('Accepted Return Request', req.user.id)
+			res.send({
+				header: 'Return ticket has been accepted by admin.',
+				content: `Accepted return request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
+			})
+		}
+
+		res.send()
+	} catch (e) {
+		console.error(e.message)
+		res.status(500).send(e.message)
+	}
+})
+
+// @route 	POST /decline
+// @desc 	 	Declining a borrow/return/pickup request
+// @access 	Admin
+router.post('/decline', auth, admin, async (req, res) => {
+	try {
+		// Find the ticket
+		const ticket = await Ticket.findOne({
+			_id: req.body.ticket_id,
+			sort_order: { $in: [1, 2, 3] }
+		})
+		if (!ticket) throw new Error('Ticket not valid')
+
+		if (ticket.sort_order === 1) {
+			ticket.status = 'Declined (Pickup)'
+			ticket.sort_order = 5
+			await ticket.save()
+			await ticket.addEventLog('Cancelled Pickup', req.user.id)
+			res.send({
+				header: 'Pick up request has been cancelled by admin.',
+				content: `Declined pick up of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
+			})
+		} else if (ticket.sort_order === 2) {
+			ticket.status = 'Declined (Borrow)'
+			ticket.sort_order = 5
+			await ticket.save()
+			await ticket.addEventLog('Declined Borrow Request', req.user.id)
+			res.send({
+				header: 'Borrow ticket has been declined by admin.',
+				content: `Declined borrow request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
+			})
+		} else if (ticket.sort_order === 3) {
+			ticket.status = 'Declined (Return)'
+			ticket.sort_order = 4
+			await ticket.save()
+			await ticket.addEventLog('Declined Return Request', req.user.id)
+			res.send({
+				header: 'Return ticket has been declined by admin.',
+				content: `Declined return request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
+			})
+		}
+
+		res.send()
 	} catch (e) {
 		console.error(e.message)
 		res.status(500).send(e.message)
