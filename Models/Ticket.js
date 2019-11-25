@@ -58,8 +58,7 @@ const ticketSchema = new mongoose.Schema(
 				// "Expired" (by System) - tickets can expire
 				by: {
 					type: mongoose.Schema.Types.ObjectId,
-					ref: 'User',
-					autopopulate: { select: 'name' }
+					ref: 'User'
 				},
 				time: {
 					type: Date,

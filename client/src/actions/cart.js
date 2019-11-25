@@ -39,11 +39,11 @@ export const removeFromCart = (id) => async (dispatch) => {
 	}
 }
 
-export const borrowBooks = ({ checkoutItems, history }) => async (dispatch) => {
+export const checkout = ({ checkoutItems, history }) => async (dispatch) => {
 	try {
 		const config = { headers: { 'Content-Type': 'application/json' } }
 		const body = JSON.stringify({ checkoutItems })
-		const res = await axios.post('/borrow', body, config)
+		const res = await axios.post('/checkout', body, config)
 
 		// In Reducer, this should remove items in array
 		dispatch({ type: CHECKOUT, payload: res.data })

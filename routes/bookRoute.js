@@ -21,7 +21,7 @@ router.get('/all', auth, async (req, res) => {
 	}
 })
 
-// @route 	GET /books/search?search=something
+// @route 	GET /books/search?search=something&page=number
 // @desc 		Get All Books
 // @access 	Admin, Students
 router.get('/search', auth, async (req, res) => {

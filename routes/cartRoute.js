@@ -54,4 +54,48 @@ router.post('/cart/remove', auth, async (req, res) => {
 	}
 })
 
+// @route 	POST /checkout
+// @desc 	 	Issue a borrow request from checkout
+// @access 	Student, Admin
+router.post('/checkout', auth, async (req, res) => {
+	try {
+		// See if there's a book that's not available
+		const books = await Book.find({ _id: { $in: req.body.checkoutItems }, available: { $lt: 1 } })
+		if (books.length > 0)
+			throw new Error(`The following books are not available: ${books.map((book) => book.title)}`)
+
+		// Check if current user has active ticket for the books
+		const openTicket = await Ticket.find({
+			borrower: req.user._id,
+			sort_order: { $lt: 5 },
+			book: { $in: req.body.checkoutItems }
+		})
+
+		if (openTicket.length > 0)
+			throw new Error(
+				`You still have active tickets for the following books: ${openTicket.map(
+					({ book }) => book.title
+				)}`
+			)
+
+		req.body.checkoutItems.forEach(async (book_id) => {
+			const ticket = new Ticket()
+			ticket.book = book_id
+			ticket.borrower = req.user._id
+			ticket.status = 'Pending (Borrow)'
+			ticket.sort_order = 2
+			await ticket.save()
+			await ticket.addEventLog('Borrow Request', req.user.id)
+		})
+
+		// Remove books from the Cart
+		req.user.cart = req.user.cart.filter(({ id }) => !req.body.checkoutItems.includes(id))
+		await req.user.save()
+		res.send(req.user.cart)
+	} catch (e) {
+		console.error(e.message)
+		res.status(400).send(e.message)
+	}
+})
+
 module.exports = router

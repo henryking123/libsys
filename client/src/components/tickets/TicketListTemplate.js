@@ -34,7 +34,6 @@ class Tickets extends Component {
 
 					<Table.Body>
 						{tickets.map(({ book: { title }, sort_order, status, event_logs, _id }) => {
-							const lastEvent = event_logs[event_logs.length - 1]
 							return (
 								<Table.Row key={_id}>
 									<Table.Cell>{this.ribbon(sort_order, status)}</Table.Cell>
@@ -48,7 +47,8 @@ class Tickets extends Component {
 												</Item.Header>
 												<Item.Description>
 													<em>
-														{lastEvent.status} by {lastEvent.by.name}
+														{event_logs[event_logs.length - 1].status} by{' '}
+														{event_logs[event_logs.length - 1].by.name}
 													</em>
 												</Item.Description>
 											</Item.Content>

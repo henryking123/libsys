@@ -38,8 +38,6 @@ const Navbar = ({ loading, isAuthenticated, logoutUser, history, user }) => {
 
 				{!loading ? (
 					isAuthenticated ? (
-						// Nav bar: Home, Cart, Profile, My Books, My Tickets
-						// Tickets, Users
 						<React.Fragment>
 							<Menu.Item as={Link} to="/books">
 								Home
@@ -48,18 +46,23 @@ const Navbar = ({ loading, isAuthenticated, logoutUser, history, user }) => {
 							<Menu.Item as={Link} to="/profile">
 								Profile
 							</Menu.Item>
+
 							<Menu.Item as={Link} to="/my_books">
 								My Books
 							</Menu.Item>
+
 							<Menu.Item as={Link} to="/my_tickets">
 								My Tickets
 							</Menu.Item>
+
 							<Menu.Menu position="right">
 								{adminRoutes()}
+
 								<Menu.Item as={Link} to="/cart">
 									<Icon name="shopping cart" />
 									Cart
 								</Menu.Item>
+
 								<Menu.Item>
 									<Button as="a" inverted onClick={logout}>
 										Log Out
@@ -74,6 +77,7 @@ const Navbar = ({ loading, isAuthenticated, logoutUser, history, user }) => {
 									<Button inverted as={Link} to="/register">
 										Sign Up
 									</Button>
+
 									<Button inverted as={Link} to="/login" style={{ marginLeft: '0.5em' }}>
 										Log In
 									</Button>

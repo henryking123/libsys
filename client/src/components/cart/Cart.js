@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Label, Item, Table, Checkbox, Button, Icon } from 'semantic-ui-react'
-import { loadCart, removeFromCart, borrowBooks } from '../../actions/cart'
+import { loadCart, removeFromCart, checkout } from '../../actions/cart'
 import { Link, withRouter } from 'react-router-dom'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -58,7 +58,7 @@ class Cart extends Component {
 		Object.keys(this.state.checkedItems).forEach((id) => {
 			if (this.state.checkedItems[id] === true) checkoutItems.push(id)
 		})
-		this.props.borrowBooks({ checkoutItems, history: this.props.history })
+		this.props.checkout({ checkoutItems, history: this.props.history })
 	}
 
 	render() {
@@ -150,11 +150,11 @@ class Cart extends Component {
 Cart.propTypes = {
 	loadCart: PropTypes.func.isRequired,
 	removeFromCart: PropTypes.func.isRequired,
-	borrowBooks: PropTypes.func.isRequired,
+	checkout: PropTypes.func.isRequired,
 	cart: PropTypes.array.isRequired,
 	history: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ cart }) => ({ cart })
 
-export default connect(mapStateToProps, { loadCart, removeFromCart, borrowBooks })(withRouter(Cart))
+export default connect(mapStateToProps, { loadCart, removeFromCart, checkout })(withRouter(Cart))

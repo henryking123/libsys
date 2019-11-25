@@ -52,7 +52,7 @@ const userSchema = mongoose.Schema(
 				}
 			}
 		],
-		cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [], autopopulate: true }]
+		cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }]
 	},
 	{ timestamps: true }
 )
@@ -64,8 +64,7 @@ userSchema.set('toJSON', { virtuals: true })
 userSchema.virtual('tickets', {
 	ref: 'Ticket',
 	localField: '_id',
-	foreignField: 'borrower',
-	autopopulate: true
+	foreignField: 'borrower'
 })
 
 // Removing some stuff before sending the user back

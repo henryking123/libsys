@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import Profile from './ProfileTemplate'
-import TicketsList from '../tickets/TicketsListTemplate'
+import TicketList from '../tickets/TicketListTemplate'
 import { connect } from 'react-redux'
 import { Loader, Grid } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
@@ -28,7 +28,7 @@ class User extends Component {
 							<Profile user={this.props.auth.user} />
 						</Grid.Column>
 						<Grid.Column width={11}>
-							<TicketsList tickets={this.props.auth.user.tickets} />
+							<TicketList tickets={this.props.auth.user.tickets} />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
@@ -41,7 +41,7 @@ class User extends Component {
 							<Profile user={this.state.user} />
 						</Grid.Column>
 						<Grid.Column width={11}>
-							<TicketsList tickets={this.state.user.tickets} />
+							<TicketList tickets={this.state.user.tickets} />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>

@@ -12,6 +12,14 @@ module.exports = async (req, res, next) => {
 
 		const decoded = jwt.verify(token, jwtSecret)
 		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
+			.populate({
+				path: 'tickets',
+				populate: [
+					{ path: 'book', select: 'title' },
+					{ path: 'event_logs.by', select: 'name' }
+				]
+			})
+			.populate({ path: 'cart' })
 
 		if (!user) throw new Error()
 
