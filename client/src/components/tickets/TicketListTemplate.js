@@ -34,7 +34,7 @@ class Tickets extends Component {
 		}
 	}
 
-	render() {
+	render = () => {
 		const { tickets } = this.props
 
 		return (
