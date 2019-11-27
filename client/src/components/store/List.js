@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Icon, Item, Label } from 'semantic-ui-react'
+import { Button, Loader, Item, Label } from 'semantic-ui-react'
 import moment from 'moment'
 // Redux
 import PropTypes from 'prop-types'
@@ -8,7 +8,47 @@ import { connect } from 'react-redux'
 
 // Change the button of those that are already in cart or already in tickets
 class List extends Component {
+	renderButton = (available, _id) => {
+		if (this.props.auth.user.tickets.some(({ book }) => book._id === _id)) {
+			return <Button floated="right" primary content="Borrowed" />
+		} else if (this.props.cart.some((cart) => cart._id === _id)) {
+			return (
+				<Button
+					floated="right"
+					content="Remove from Cart"
+					onClick={() => this.props.removeFromCart(_id)}
+					icon="trash"
+					labelPosition="right"
+				/>
+			)
+		} else if (!available) {
+			return <Button negative floated="right" content="Not Available" />
+		} else {
+			return (
+				<Button
+					positive
+					floated="right"
+					content="Add To Cart"
+					onClick={() => this.props.addToCart(_id)}
+					icon="right chevron"
+					labelPosition="right"
+				/>
+			)
+		}
+	}
+
+	renderAvailability = (available) => {
+		if (!available) {
+			return <Label color="red">0 left</Label>
+		} else if (available < 5) {
+			return <Label color="orange">Only {available} left</Label>
+		}
+	}
+
 	render() {
+		if (this.props.auth.loading) {
+			return <Loader active inline="centered" />
+		}
 		return (
 			<Item.Group divided>
 				{this.props.books.map(({ title, author, yearPublished, available, _id }) => (
@@ -22,29 +62,10 @@ class List extends Component {
 							<Item.Header as="a">{title}</Item.Header>
 
 							<Item.Extra>
-								{(!available && <Label color="red">Not available</Label>) ||
-									(available < 5 && <Label color="orange">Only {available} left</Label>)}
-								{author && <Label>{author}</Label>}
-								{yearPublished && <Label>{moment(yearPublished).format('YYYY')}</Label>}
-								{(this.props.cart.some((cart) => cart._id === _id) && (
-									<Button negative floated="right" onClick={() => this.props.removeFromCart(_id)}>
-										Remove from Cart <Icon name="trash" style={{ marginLeft: '5px' }} />
-									</Button>
-								)) ||
-									(!available && (
-										<Button primary disabled floated="right">
-											Add to Cart <Icon name="right chevron" />
-										</Button>
-									)) || (
-										<Button
-											primary
-											floated="right"
-											loading={false}
-											onClick={() => this.props.addToCart(_id)}
-										>
-											Add to Cart <Icon name="right chevron" />
-										</Button>
-									)}
+								{this.renderAvailability(available)}
+								{author ? <Label>{author}</Label> : ''}
+								{yearPublished ? <Label>{moment(yearPublished).format('YYYY')}</Label> : ''}
+								{this.renderButton(available, _id)}
 							</Item.Extra>
 						</Item.Content>
 					</Item>
@@ -58,9 +79,10 @@ List.propTypes = {
 	books: PropTypes.array.isRequired,
 	addToCart: PropTypes.func.isRequired,
 	removeFromCart: PropTypes.func.isRequired,
-	cart: PropTypes.array
+	cart: PropTypes.array,
+	auth: PropTypes.object
 }
 
-const mapStateToProps = ({ cart }) => ({ cart })
+const mapStateToProps = ({ cart, auth }) => ({ cart, auth })
 
 export default connect(mapStateToProps, { addToCart, removeFromCart })(List)
