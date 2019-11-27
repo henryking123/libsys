@@ -21,12 +21,10 @@ const ticketSchema = new mongoose.Schema(
 			type: Date
 		},
 		status: {
-			type: String,
-			required: true
+			type: String
 		},
 		sort_order: {
-			type: Number,
-			required: true
+			type: Number
 			// Sort_order : Status
 			// Green
 			// 1 : For Pick Up*
@@ -62,7 +60,7 @@ const ticketSchema = new mongoose.Schema(
 				// "Cancelled Return Request" (by User) - user can cancel the return request
 				// "Declined Borrow Request" (by Admin) - admin can decline the borrow request*
 				// "Declined Return Request" (by Admin) - admin can decline the return request&
-				// "Cancelled Pickup" (by Admin) - admin can decline the return request*
+				// "Declined Pickup" (by Admin) - admin can decline the return request*
 				// "Cancelled Pickup" (by User) - admin can decline the return request
 				// "Expired" (by System) - tickets can expire
 				by: {
@@ -79,11 +77,13 @@ const ticketSchema = new mongoose.Schema(
 	{ timestamps: true }
 )
 
-ticketSchema.methods.addEventLog = async function(status, by) {
+ticketSchema.methods.updateTicket = async function({ status, sort_order, event, user_id }) {
 	try {
 		const ticket = this
 
-		ticket.event_logs.push({ status, by })
+		ticket.status = status
+		ticket.sort_order = sort_order
+		ticket.event_logs.push({ status: event, by: user_id })
 		await ticket.save()
 	} catch (e) {
 		console.error(e.message)

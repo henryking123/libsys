@@ -53,20 +53,13 @@ const userSchema = mongoose.Schema(
 			}
 		],
 		cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }],
-		books: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book', default: [] }]
+		tickets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ticket', default: [] }]
 	},
 	{ timestamps: true }
 )
 
 userSchema.set('toObject', { virtuals: true })
 userSchema.set('toJSON', { virtuals: true })
-
-// Virtual property, building the relationship between two properties
-userSchema.virtual('tickets', {
-	ref: 'Ticket',
-	localField: '_id',
-	foreignField: 'borrower'
-})
 
 // Removing some stuff before sending the user back
 userSchema.methods.toJSON = function() {
@@ -96,6 +89,26 @@ userSchema.methods.generateAuthToken = async function() {
 
 	await user.save()
 	return token
+}
+
+userSchema.methods.addTicket = async function(ticket_id) {
+	try {
+		const user = this
+		user.tickets.push(ticket_id)
+		await user.save()
+	} catch (e) {
+		console.error(e.message)
+	}
+}
+
+userSchema.methods.removeTicket = async function(ticket_id) {
+	try {
+		const user = this
+		user.tickets = user.tickets.filter(({ _id }) => _id.toString() !== ticket_id.toString())
+		await user.save()
+	} catch (e) {
+		console.error(e.message)
+	}
 }
 
 // Hashing the plain text password before saving

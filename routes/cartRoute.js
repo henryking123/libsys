@@ -5,6 +5,7 @@ const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
 const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
+const User = mongoose.model('User')
 
 // @route 	GET /cart
 // @desc 	 	List user's cart
@@ -82,10 +83,16 @@ router.post('/checkout', auth, async (req, res) => {
 			const ticket = new Ticket()
 			ticket.book = book_id
 			ticket.borrower = req.user._id
-			ticket.status = 'Pending (Borrow)'
-			ticket.sort_order = 2
 			await ticket.save()
-			await ticket.addEventLog('Borrow Request', req.user.id)
+			await ticket.updateTicket({
+				status: 'Pending (Borrow)',
+				sort_order: 2,
+				event: 'Borrow Request',
+				user_id: req.user.id
+			})
+
+			// Add ticket to array
+			await req.user.addTicket(ticket._id)
 		})
 
 		// Remove books from the Cart

@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 const { jwtSecret } = require('../config/keys')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
-const Ticket = mongoose.model('Ticket')
 
 module.exports = async (req, res, next) => {
 	try {
@@ -16,13 +15,13 @@ module.exports = async (req, res, next) => {
 		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
 			.populate({
 				path: 'tickets',
+				select: '-borrower',
 				populate: [
 					{ path: 'book', select: 'title' },
 					{ path: 'event_logs.by', select: 'name' }
 				]
 			})
 			.populate({ path: 'cart' })
-			.populate({ path: 'books', select: ['title', 'author', 'yearPublished'] })
 
 		if (!user) throw new Error()
 

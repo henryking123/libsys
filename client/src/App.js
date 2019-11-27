@@ -22,6 +22,7 @@ import Cart from './components/cart/Cart'
 import User from './components/user/User'
 import AllTickets from './components/tickets/AllTickets'
 import UserTickets from './components/user/UserTickets'
+import UserBooks from './components/user/UserBooks'
 
 // So even before app loads, header is already loaded
 if (localStorage.token) setAuthHeader(localStorage.token)
@@ -51,6 +52,7 @@ const App = () => {
 						<AdminRoute exact path="/profile/:user_id" component={User} />
 
 						<PrivateRoute exact path="/my_tickets" component={UserTickets} />
+						<PrivateRoute exact path="/my_books" component={UserBooks} />
 						<AdminRoute exact path="/tickets/" component={AllTickets} />
 					</Switch>
 				</div>
