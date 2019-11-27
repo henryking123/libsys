@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Label, Item, Table, Checkbox, Button, Icon } from 'semantic-ui-react'
+import { Label, Item, Table, Checkbox, Button, Icon, Loader } from 'semantic-ui-react'
 import { loadCart, removeFromCart, checkout } from '../../actions/cart'
+import { loadUser } from '../../actions/auth'
 import { Link, withRouter } from 'react-router-dom'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -11,6 +12,7 @@ class Cart extends Component {
 
 	async componentDidMount() {
 		await this.props.loadCart()
+		await this.props.loadUser()
 		// Initializes all items into checkedItems with value of false
 		this.selectAll()
 	}
@@ -35,7 +37,7 @@ class Cart extends Component {
 	selectAll = async () => {
 		let items = {}
 		this.props.cart.forEach(({ id, available }) => {
-			if (available > 0) {
+			if (available > 0 && !this.props.auth.user.tickets.some(({ book }) => book._id === id)) {
 				items = { ...items, [id]: !this.state.selectedAll }
 			}
 		})
@@ -63,6 +65,9 @@ class Cart extends Component {
 
 	render() {
 		const { checkedItems } = this.state
+		if (this.props.auth.loading) {
+			return <Loader active inline="centered" />
+		}
 		return (
 			<Table celled>
 				<Table.Header>
@@ -81,13 +86,25 @@ class Cart extends Component {
 				</Table.Header>
 				<Table.Body>
 					{this.props.cart.map(({ title, author, yearPublished, available, _id }) => (
-						<Table.Row key={_id} negative={!available}>
+						<Table.Row
+							key={_id}
+							negative={
+								!available || this.props.auth.user.tickets.some(({ book }) => book._id === _id)
+							}
+						>
 							<Table.Cell textAlign="center" collapsing>
-								{(!available && (
+								{/* Check if available and if user doesn't have a ticket for it */}
+								{this.props.auth.user.tickets.some(({ book }) => book._id === _id) ? (
+									<Label ribbon color="blue">
+										Borrowed
+									</Label>
+								) : available ? (
+									<Checkbox checked={checkedItems[_id]} onChange={() => this.onChange(_id)} />
+								) : (
 									<Label ribbon color="red">
 										Not Available
 									</Label>
-								)) || <Checkbox checked={checkedItems[_id]} onChange={() => this.onChange(_id)} />}
+								)}
 							</Table.Cell>
 							<Table.Cell>
 								<Item.Group>
@@ -149,12 +166,16 @@ class Cart extends Component {
 
 Cart.propTypes = {
 	loadCart: PropTypes.func.isRequired,
+	loadUser: PropTypes.func.isRequired,
 	removeFromCart: PropTypes.func.isRequired,
 	checkout: PropTypes.func.isRequired,
 	cart: PropTypes.array.isRequired,
-	history: PropTypes.object.isRequired
+	history: PropTypes.object.isRequired,
+	auth: PropTypes.object
 }
 
-const mapStateToProps = ({ cart }) => ({ cart })
+const mapStateToProps = ({ cart, auth }) => ({ cart, auth })
 
-export default connect(mapStateToProps, { loadCart, removeFromCart, checkout })(withRouter(Cart))
+export default connect(mapStateToProps, { loadCart, removeFromCart, checkout, loadUser })(
+	withRouter(Cart)
+)
