@@ -55,7 +55,7 @@ class List extends Component {
 					<Item key={_id}>
 						<Item.Image
 							src="https://kbimages1-a.akamaihd.net/52c896b6-2750-4c3d-a844-0760f23117f9/353/569/90/False/how-to-study-smart-study-secrets-of-an-honors-student.jpg"
-							size="small"
+							size="tiny"
 						/>
 
 						<Item.Content verticalAlign="middle">

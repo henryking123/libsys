@@ -133,4 +133,16 @@ userSchema.statics.findByCredentials = async (email, password) => {
 	return user
 }
 
+userSchema.statics.findAndRemoveTicket = async (user_id, ticket_id) => {
+	const user = await User.findById(user_id)
+
+	if (!user) throw new Error('User not found.')
+
+	user.tickets = user.tickets.filter(({ _id }) => _id.toString() !== ticket_id.toString())
+
+	await user.save()
+
+	return
+}
+
 const User = mongoose.model('User', userSchema)

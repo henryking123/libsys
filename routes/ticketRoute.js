@@ -5,6 +5,7 @@ const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
 const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
+const User = mongoose.model('User')
 
 // @route 	GET /tickets/
 // @desc 	 	Get current user's tickets
@@ -102,12 +103,53 @@ router.post('/accept', auth, admin, async (req, res) => {
 				event: 'Given to Borrower',
 				user_id: req.user.id
 			})
+			// Book gets picked up, add "from" to ticket
+			ticket.from = Date.now()
+			await ticket.save()
 
 			res.send({
 				header: 'Ticket has been accepted by admin. Book has been picked up.',
 				content: `${ticket.borrower.name} has successfully borrowed the book titled "${ticket.book.title}".`
 			})
 		} else if (ticket.sort_order === 2) {
+			// Check if book is available
+			const book = await Book.findOne({ _id: ticket.book._id, available: { $gt: 0 } })
+			if (!book) {
+				await ticket.updateTicket({
+					status: 'Book not available',
+					sort_order: 5,
+					event: 'Borrow Request Error',
+					user_id: req.user.id
+				})
+				// Remove the item from user.tickets
+				await User.findAndRemoveTicket(ticket.borrower, ticket._id)
+				throw new Error(`Book titled "${ticket.book.title}" is not available.`)
+			}
+			// Check if user currently has the book
+			const openTicket = await Ticket.find({
+				borrower: req.user._id,
+				sort_order: { $lt: 5, $ne: 2 },
+				book: ticket.book._id,
+				_id: { $ne: ticket._id }
+			})
+
+			if (openTicket.length > 0) {
+				await ticket.updateTicket({
+					status: 'Duplicate Request',
+					sort_order: 5,
+					event: 'Duplicate Request',
+					user_id: req.user.id
+				})
+				// Remove the item from user.tickets
+				await User.findAndRemoveTicket(ticket.borrower, ticket._id)
+				throw new Error(
+					`${ticket.borrower.name} has an active ticket for the book titled "${ticket.book.title}".`
+				)
+			}
+			// If all is clear
+			book.available -= 1
+			await book.save()
+
 			await ticket.updateTicket({
 				status: 'For Pick Up',
 				sort_order: 1,
@@ -115,9 +157,6 @@ router.post('/accept', auth, admin, async (req, res) => {
 				user_id: req.user.id
 			})
 
-			const book = await Book.findById(ticket.book._id)
-			book.available -= 1
-			await book.save()
 			res.send({
 				header: 'Borrow ticket has been accepted by admin. Prepare the book for pickup.',
 				content: `Accepted borrow request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
@@ -133,8 +172,9 @@ router.post('/accept', auth, admin, async (req, res) => {
 			const book = await Book.findById(ticket.book._id)
 			book.available += 1
 			await book.save()
+
 			// Remove the item from user.tickets
-			req.user.removeTicket(ticket._id)
+			await User.findAndRemoveTicket(ticket.borrower, ticket._id)
 			res.send({
 				header: 'Return ticket has been accepted by admin.',
 				content: `Accepted return request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
@@ -144,7 +184,7 @@ router.post('/accept', auth, admin, async (req, res) => {
 		res.send()
 	} catch (e) {
 		console.error(e.message)
-		res.status(500).send(e.message)
+		res.status(400).send(e.message)
 	}
 })
 
@@ -173,7 +213,8 @@ router.post('/decline', auth, admin, async (req, res) => {
 			await book.save()
 
 			// Remove the item from user.tickets
-			req.user.removeTicket(ticket._id)
+			await User.findAndRemoveTicket(ticket.borrower, ticket._id)
+
 			res.send({
 				header: 'Pick up request has been cancelled by admin.',
 				content: `Declined pick up of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
@@ -186,7 +227,7 @@ router.post('/decline', auth, admin, async (req, res) => {
 				user_id: req.user.id
 			})
 			// Remove the item from user.tickets
-			req.user.removeTicket(ticket._id)
+			await User.findAndRemoveTicket(ticket.borrower, ticket._id)
 			res.send({
 				header: 'Borrow ticket has been declined by admin.',
 				content: `Declined borrow request of ${ticket.borrower.name} for the book titled "${ticket.book.title}".`
@@ -212,27 +253,65 @@ router.post('/decline', auth, admin, async (req, res) => {
 	}
 })
 
-// @route 	POST /cancel/:ticket_id
-// @desc 	 	Cancel ticket
+// @route 	POST /cancel/
+// @desc 	 	Canceling a ticket
 // @access 	Owner of the ticket
-router.post('/cancel/:ticket_id', auth, async (req, res) => {
+router.post('/cancel/', auth, async (req, res) => {
 	try {
 		const ticket = await Ticket.findOne({
-			_id: req.params.ticket_id,
-			status: { $in: ['pendingBorrow', 'pendingReturn'] },
+			_id: req.body.ticket_id,
+			sort_order: { $in: [1, 2, 3] },
 			borrower: req.user._id
 		})
+
 		if (!ticket) throw new Error('Ticket not valid.')
 
-		if (ticket.status === 'pendingBorrow') {
-			ticket.status = 'cancelled'
-		} else {
-			ticket.status = 'active'
+		if (ticket.sort_order === 1) {
+			await ticket.updateTicket({
+				status: 'Cancelled (Pickup)',
+				sort_order: 5,
+				event: 'Cancelled Pickup',
+				user_id: req.user.id
+			})
+
+			const book = await Book.findById(ticket.book._id)
+			book.available += 1
+			await book.save()
+
+			// Remove the item from user.tickets
+			req.user.removeTicket(ticket._id)
+			res.send({
+				header: 'Pick up request has been successfully cancelled.',
+				content: `Cancelled pick up request for the book titled "${ticket.book.title}".`
+			})
+		} else if (ticket.sort_order === 2) {
+			await ticket.updateTicket({
+				status: 'Cancelled (Borrow)',
+				sort_order: 5,
+				event: 'Cancelled Borrow Request',
+				user_id: req.user.id
+			})
+			// Remove the item from user.tickets
+			req.user.removeTicket(ticket._id)
+			res.send({
+				header: 'Borrow request has been successfully cancelled.',
+				content: `Cancelled borrow request for the book titled "${ticket.book.title}".`
+			})
+		} else if (ticket.sort_order === 3) {
+			await ticket.updateTicket({
+				status: 'Cancelled (Return)',
+				sort_order: 4,
+				event: 'Cancelled Return Request',
+				user_id: req.user.id
+			})
+
+			res.send({
+				header: 'Return request has been successfully cancelled.',
+				content: `Cancelled return request for the book titled "${ticket.book.title}".`
+			})
 		}
 
-		await ticket.save()
-
-		res.send({ ticket })
+		res.send()
 	} catch (e) {
 		console.error(e.message)
 		res.status(400).send(e.message)

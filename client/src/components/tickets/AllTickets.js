@@ -34,6 +34,8 @@ export class AllTickets extends Component {
 			await this.setState({ tickets })
 		} catch (e) {
 			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
+			const tickets = await this.getTickets(this.state.options)
+			await this.setState({ tickets })
 		}
 	}
 
@@ -45,6 +47,8 @@ export class AllTickets extends Component {
 			await this.setState({ tickets })
 		} catch (e) {
 			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
+			const tickets = await this.getTickets(this.state.options)
+			await this.setState({ tickets })
 		}
 	}
 
