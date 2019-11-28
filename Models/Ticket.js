@@ -58,14 +58,14 @@ const ticketSchema = new mongoose.Schema(
 				// "Duplicate Request" (by Admin) - admin accepts the ticket but system found an active ticket*
 				// "Accepted Borrow Request" (by Admin) - admin prepares the book (ticket expiration gets updated)*
 				// "Given to Borrower" (by Admin) - user gets the book*
-				// "Return Request" (by User) - user tries to return a book
+				// "Return Request" (by User) - user tries to return a book*
 				// "Accepted Return Request" (by Admin) - admin gets the book from the student*
-				// "Cancelled Borrow Request" (by User) - user can cancel the borrow request
-				// "Cancelled Return Request" (by User) - user can cancel the return request
+				// "Cancelled Borrow Request" (by User) - user can cancel the borrow request*
+				// "Cancelled Return Request" (by User) - user can cancel the return request*
 				// "Declined Borrow Request" (by Admin) - admin can decline the borrow request*
 				// "Declined Return Request" (by Admin) - admin can decline the return request*
 				// "Declined Pickup" (by Admin) - admin can decline the return request*
-				// "Cancelled Pickup" (by User) - admin can decline the return request
+				// "Cancelled Pickup" (by User) - admin can decline the return request*
 				// "Expired" (by System) - tickets can expire
 				by: {
 					type: mongoose.Schema.Types.ObjectId,

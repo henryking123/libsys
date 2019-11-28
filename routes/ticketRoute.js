@@ -318,4 +318,31 @@ router.post('/cancel/', auth, async (req, res) => {
 	}
 })
 
+// @route 	POST /return
+// @desc 	 	Issuing a return request for a book
+// @access 	Owner of the ticket
+router.post('/return', auth, async (req, res) => {
+	try {
+		const ticket = await Ticket.findOne({
+			_id: req.body.ticket_id,
+			sort_order: 4,
+			borrower: req.user._id
+		})
+
+		if (!ticket) throw new Error('Ticket not valid.')
+
+		await ticket.updateTicket({
+			status: 'Pending (Return)',
+			sort_order: 3,
+			event: 'Return Request',
+			user_id: req.user.id
+		})
+
+		res.send()
+	} catch (e) {
+		console.error(e.message)
+		res.status(400).send(e.message)
+	}
+})
+
 module.exports = router
