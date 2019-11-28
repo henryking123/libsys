@@ -7,13 +7,13 @@ const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
 const User = mongoose.model('User')
 
-// @route 	GET /tickets/
-// @desc 	 	Get current user's tickets
+// @route 	GET /tickets
+// @desc 	 	Get current user's active tickets
 // @access 	Admin
 router.get('/', auth, admin, async (req, res) => {
 	try {
-		const tickets = await Ticket.find({ borrower: req.user.id })
-		res.send(tickets)
+		await req.user.refreshTickets()
+		res.send(req.user.tickets)
 	} catch (e) {
 		console.error(e.message)
 		res.status(400).send(e.message)

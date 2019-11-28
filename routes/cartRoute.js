@@ -90,11 +90,9 @@ router.post('/checkout', auth, async (req, res) => {
 				event: 'Borrow Request',
 				user_id: req.user.id
 			})
-
-			// Add ticket to array
-			await req.user.addTicket(ticket._id)
 		})
 
+		await req.user.refreshTickets()
 		// Remove books from the Cart
 		req.user.cart = req.user.cart.filter(({ id }) => !req.body.checkoutItems.includes(id))
 		await req.user.save()

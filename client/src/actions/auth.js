@@ -7,7 +7,8 @@ import {
 	LOGIN_SUCCESS,
 	LOGOUT_USER,
 	NO_USER,
-	EMPTY_CART
+	EMPTY_CART,
+	RELOAD_TICKETS
 } from './types'
 import setAuthHeader from '../utils/setAuthHeader'
 import axios from 'axios'
@@ -91,6 +92,16 @@ export const logoutAll = (history) => async (dispatch) => {
 		dispatch({ type: LOGOUT_USER })
 		dispatch({ type: EMPTY_CART })
 		history.push('/login')
+	} catch (e) {
+		console.error(e.message)
+	}
+}
+
+// Reload tickets
+export const reloadTickets = () => async (dispatch) => {
+	try {
+		const res = await axios.get('/tickets')
+		dispatch({ type: RELOAD_TICKETS, payload: res.data })
 	} catch (e) {
 		console.error(e.message)
 	}

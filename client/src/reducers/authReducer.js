@@ -6,7 +6,8 @@ import {
 	LOGIN_SUCCESS,
 	LOGIN_FAIL,
 	LOGOUT_USER,
-	NO_USER
+	NO_USER,
+	RELOAD_TICKETS
 } from '../actions/types'
 
 const initialState = {
@@ -31,6 +32,8 @@ export default (state = initialState, { type, payload }) => {
 		case LOGIN_SUCCESS:
 			localStorage.setItem('token', payload.token)
 			return { ...state, ...payload, isAuthenticated: true, loading: false }
+		case RELOAD_TICKETS:
+			return { ...state, user: { tickets: payload } }
 		default:
 			return state
 	}

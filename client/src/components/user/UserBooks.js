@@ -3,6 +3,9 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Loader, Item, Button, Label, Table, Header } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { setAlert } from '../../actions/alert'
+import { reloadTickets } from '../../actions/auth'
 
 class UserBooks extends Component {
 	ribbon = (sort_order, status) => {
@@ -41,7 +44,13 @@ class UserBooks extends Component {
 				return (
 					// For Pick Up
 					<Item.Extra>
-						<Button floated="left" icon="close" labelPosition="left" content="Cancel Pick Up" />
+						<Button
+							floated="left"
+							icon="close"
+							labelPosition="left"
+							content="Cancel Pick Up"
+							onClick={() => this.cancelTicket(_id)}
+						/>
 					</Item.Extra>
 				)
 			case 2:
@@ -53,6 +62,7 @@ class UserBooks extends Component {
 							icon="close"
 							labelPosition="left"
 							content="Cancel Borrow Request"
+							onClick={() => this.cancelTicket(_id)}
 						/>
 					</Item.Extra>
 				)
@@ -65,6 +75,7 @@ class UserBooks extends Component {
 							icon="close"
 							labelPosition="left"
 							content="Cancel Return Request"
+							onClick={() => this.cancelTicket(_id)}
 						/>
 					</Item.Extra>
 				)
@@ -85,6 +96,20 @@ class UserBooks extends Component {
 				return
 		}
 	}
+
+	cancelTicket = async (ticket_id) => {
+		try {
+			// Send to cancel route
+			const res = await axios.post('/tickets/cancel', { ticket_id })
+			this.props.setAlert(res.data, 'positive')
+			// Reload Tickets
+			this.props.reloadTickets()
+		} catch (e) {
+			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
+			this.props.reloadTickets()
+		}
+	}
+	returnTicket = async (id) => {}
 
 	render() {
 		const { user } = this.props.auth
@@ -145,9 +170,11 @@ class UserBooks extends Component {
 }
 
 UserBooks.propTypes = {
-	auth: PropTypes.object
+	auth: PropTypes.object,
+	reloadTickets: PropTypes.func.isRequired,
+	setAlert: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })
 
-export default connect(mapStateToProps)(UserBooks)
+export default connect(mapStateToProps, { reloadTickets, setAlert })(UserBooks)

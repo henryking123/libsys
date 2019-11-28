@@ -25,6 +25,8 @@ module.exports = async (req, res, next) => {
 
 		if (!user) throw new Error()
 
+		await user.refreshTickets()
+
 		req.token = token
 		req.user = user
 		next()

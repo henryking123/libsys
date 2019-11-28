@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { jwtSecret } = require('../config/keys')
 const mongooseAutopopulate = require('mongoose-autopopulate')
+const Ticket = mongoose.model('Ticket')
 
 const userSchema = mongoose.Schema(
 	{
@@ -91,10 +92,10 @@ userSchema.methods.generateAuthToken = async function() {
 	return token
 }
 
-userSchema.methods.addTicket = async function(ticket_id) {
+userSchema.methods.refreshTickets = async function() {
 	try {
 		const user = this
-		user.tickets.push(ticket_id)
+		user.tickets = await Ticket.find({ borrower: user._id, sort_order: { $lt: 4 } })
 		await user.save()
 	} catch (e) {
 		console.error(e.message)
