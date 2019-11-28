@@ -338,7 +338,10 @@ router.post('/return', auth, async (req, res) => {
 			user_id: req.user.id
 		})
 
-		res.send()
+		res.send({
+			header: 'Return request has been sent.',
+			content: `Created return request for the book titled "${ticket.book.title}".`
+		})
 	} catch (e) {
 		console.error(e.message)
 		res.status(400).send(e.message)

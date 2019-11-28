@@ -8,6 +8,10 @@ import { setAlert } from '../../actions/alert'
 import { reloadTickets } from '../../actions/auth'
 
 class UserBooks extends Component {
+	componentDidMount = () => {
+		this.props.reloadTickets()
+	}
+
 	ribbon = (sort_order, status) => {
 		switch (sort_order) {
 			case 1:
@@ -89,6 +93,7 @@ class UserBooks extends Component {
 							positive
 							labelPosition="left"
 							content="Return Book"
+							onClick={() => this.returnTicket(_id)}
 						/>
 					</Item.Extra>
 				)
@@ -103,13 +108,24 @@ class UserBooks extends Component {
 			const res = await axios.post('/tickets/cancel', { ticket_id })
 			this.props.setAlert(res.data, 'positive')
 			// Reload Tickets
-			this.props.reloadTickets()
+			await this.props.reloadTickets()
 		} catch (e) {
 			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			this.props.reloadTickets()
+			await this.props.reloadTickets()
 		}
 	}
-	returnTicket = async (id) => {}
+	returnTicket = async (ticket_id) => {
+		try {
+			// Send to return route
+			const res = await axios.post('/tickets/return', { ticket_id })
+			this.props.setAlert(res.data, 'positive')
+			// Reload Tickets
+			await this.props.reloadTickets()
+		} catch (e) {
+			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
+			await this.props.reloadTickets()
+		}
+	}
 
 	render() {
 		const { user } = this.props.auth

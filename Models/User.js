@@ -95,7 +95,10 @@ userSchema.methods.generateAuthToken = async function() {
 userSchema.methods.refreshTickets = async function() {
 	try {
 		const user = this
-		user.tickets = await Ticket.find({ borrower: user._id, sort_order: { $lt: 4 } })
+		user.tickets = await Ticket.find({ borrower: user._id, sort_order: { $lt: 5 } }).populate({
+			path: 'event_logs.by',
+			select: 'name'
+		})
 		await user.save()
 	} catch (e) {
 		console.error(e.message)

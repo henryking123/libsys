@@ -33,7 +33,7 @@ export default (state = initialState, { type, payload }) => {
 			localStorage.setItem('token', payload.token)
 			return { ...state, ...payload, isAuthenticated: true, loading: false }
 		case RELOAD_TICKETS:
-			return { ...state, user: { tickets: payload } }
+			return { ...state, user: { ...state.user, tickets: payload } }
 		default:
 			return state
 	}
