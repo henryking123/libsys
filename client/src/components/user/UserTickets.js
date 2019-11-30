@@ -4,8 +4,13 @@ import { connect } from 'react-redux'
 import TicketList from '../tickets/TicketListTemplate'
 import PropTypes from 'prop-types'
 import { Loader, Grid } from 'semantic-ui-react'
+import { reloadTickets } from '../../actions/auth'
 
 export class UserTickets extends Component {
+	componentDidMount = () => {
+		this.props.reloadTickets()
+	}
+
 	// Only return active tickets
 	render() {
 		if (!this.props.auth.loading) {
@@ -28,4 +33,4 @@ UserTickets.propTypes = {
 
 const mapStateToProps = ({ auth }) => ({ auth })
 
-export default connect(mapStateToProps)(UserTickets)
+export default connect(mapStateToProps, { reloadTickets })(UserTickets)

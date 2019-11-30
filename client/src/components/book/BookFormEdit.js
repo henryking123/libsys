@@ -1,5 +1,4 @@
 // @todo - Minimum of quantity is quantity - available
-
 import React, { Component } from 'react'
 import { Form } from 'semantic-ui-react'
 import { YearInput } from 'semantic-ui-calendar-react'

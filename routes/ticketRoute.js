@@ -7,6 +7,11 @@ const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
 const User = mongoose.model('User')
 
+// GET tickets
+// GET tickets/all
+// GET tickets/all/:option
+// GET tickets/:ticket_id
+
 // @route 	GET /tickets
 // @desc 	 	Get current user's active tickets
 // @access 	Admin
