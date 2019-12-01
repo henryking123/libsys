@@ -12,16 +12,9 @@ module.exports = async (req, res, next) => {
 
 		const decoded = jwt.verify(token, jwtSecret)
 		// Finding user and then populating the tickets, cart, and books field
-		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
-			.populate({
-				path: 'tickets',
-				select: '-borrower',
-				populate: [
-					{ path: 'book', select: 'title' },
-					{ path: 'event_logs.by', select: 'name' }
-				]
-			})
-			.populate({ path: 'cart' })
+		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token }).populate({
+			path: 'cart'
+		})
 
 		if (!user) throw new Error()
 

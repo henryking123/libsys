@@ -99,7 +99,7 @@ userSchema.methods.refreshTickets = async function() {
 			path: 'event_logs.by',
 			select: 'name'
 		})
-		await user.save()
+		// await user.save()
 	} catch (e) {
 		console.error(e.message)
 	}

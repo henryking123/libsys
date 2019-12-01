@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import { addToCart, removeFromCart } from '../../actions/cart'
 import { connect } from 'react-redux'
 
-// Change the button of those that are already in cart or already in tickets
 class List extends Component {
 	renderButton = (available, _id) => {
 		if (this.props.auth.user.tickets.some(({ book }) => book._id === _id)) {

@@ -21,6 +21,7 @@ import Navbar from './components/layouts/Navbar'
 import Cart from './components/cart/Cart'
 import User from './components/user/User'
 import AllTickets from './components/tickets/AllTickets'
+import Ticket from './components/tickets/Ticket'
 import UserTickets from './components/user/UserTickets'
 import UserBooks from './components/user/UserBooks'
 
@@ -52,7 +53,8 @@ const App = () => {
 
 						<PrivateRoute exact path="/my_tickets" component={UserTickets} />
 						<PrivateRoute exact path="/my_books" component={UserBooks} />
-						<AdminRoute exact path="/tickets/" component={AllTickets} />
+						<AdminRoute exact path="/tickets" component={AllTickets} />
+						<PrivateRoute exact path="/tickets/:ticket_id" component={Ticket} />
 					</Switch>
 				</div>
 			</Router>
