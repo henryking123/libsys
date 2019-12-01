@@ -21,7 +21,7 @@ export class AllTickets extends Component {
 	}
 
 	getTickets = async (options) => {
-		const res = await axios.get(`/tickets/${options}`)
+		const res = await axios.get(`/tickets/all/${options}`)
 		const tickets = res.data
 		return tickets
 	}

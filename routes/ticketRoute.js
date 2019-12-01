@@ -7,11 +7,6 @@ const Ticket = mongoose.model('Ticket')
 const Book = mongoose.model('Book')
 const User = mongoose.model('User')
 
-// GET tickets
-// GET tickets/all
-// GET tickets/all/:option
-// GET tickets/:ticket_id
-
 // @route 	GET /tickets
 // @desc 	 	Get current user's active tickets
 // @access 	Current User
@@ -41,27 +36,10 @@ router.get('/all', auth, async (req, res) => {
 	}
 })
 
-// @route 	GET /ticket/:ticket_id
-// @desc 	 	Get ticket details
-// @access 	Admin
-router.get('/ticket/:ticket_id', auth, admin, async (req, res) => {
-	try {
-		const ticket = await Ticket.findById(req.params.ticket_id)
-			.populate('book', ['title'])
-			.populate('borrower', ['name', 'email'])
-		if (!ticket) throw new Error('Invalid ticket')
-
-		res.send({ ticket })
-	} catch (e) {
-		console.error(e.message)
-		res.status(400).send(e.message)
-	}
-})
-
-// @route 	GET /tickets/:option
+// @route 	GET /tickets/all/:option
 // @desc 	 	Get tickets
 // @access 	Admin
-router.get('/:sort_order', auth, admin, async (req, res) => {
+router.get('/all/:sort_order', auth, admin, async (req, res) => {
 	try {
 		let options = {}
 		switch (req.params.sort_order) {
@@ -103,6 +81,23 @@ router.get('/:sort_order', auth, admin, async (req, res) => {
 	} catch (e) {
 		console.error(e.message)
 		res.status(500).send(e.message)
+	}
+})
+
+// @route 	GET /ticket/:ticket_id
+// @desc 	 	Get ticket details
+// @access 	Admin
+router.get('/:ticket_id', auth, admin, async (req, res) => {
+	try {
+		const ticket = await Ticket.findById(req.params.ticket_id)
+			.populate('book', ['title'])
+			.populate('borrower', ['name', 'email'])
+		if (!ticket) throw new Error('Invalid ticket')
+
+		res.send({ ticket })
+	} catch (e) {
+		console.error(e.message)
+		res.status(400).send(e.message)
 	}
 })
 
