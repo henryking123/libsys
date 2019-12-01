@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Label, Header, Table, Item } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 
 class Tickets extends Component {
 	ribbon = (sort_order, status) => {
@@ -65,7 +66,8 @@ class Tickets extends Component {
 												<Item.Description>
 													<em>
 														{event_logs[event_logs.length - 1].status} by{' '}
-														{event_logs[event_logs.length - 1].by.name}
+														{event_logs[event_logs.length - 1].by.name} (
+														{moment(event_logs[event_logs.length - 1].time).format('')})
 													</em>
 												</Item.Description>
 											</Item.Content>

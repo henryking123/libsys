@@ -56,7 +56,7 @@ class Search extends Component {
 								lastItem={{ content: <Icon name="angle double right" />, icon: true }}
 								prevItem={{ content: <Icon name="angle left" />, icon: true }}
 								nextItem={{ content: <Icon name="angle right" />, icon: true }}
-								style={{ marginTop: '20px' }}
+								style={{ marginTop: '20px', marginBottom: '20px' }}
 								totalPages={data.totalPages}
 								onPageChange={this.handlePaginationChange}
 								floated="right"

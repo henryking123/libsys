@@ -37,8 +37,7 @@ const App = () => {
 		<Provider store={store}>
 			<Router>
 				<Navbar />
-				<div style={{ marginBottom: '80px' }}></div>
-				<div className="ui container">
+				<div style={{ paddingTop: '80px' }} className="ui container">
 					<Alert />
 					<Switch>
 						<Route exact path="/register" component={Register} />

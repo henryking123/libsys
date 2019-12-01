@@ -78,11 +78,13 @@ router.get('/all/:sort_order', auth, admin, async (req, res) => {
 				throw new Error('Invalid argument.')
 		}
 
-		const tickets = await Ticket.find(options)
-			.select('-event_logs')
-			.populate({ path: 'borrower', select: 'name' })
-			.sort({ sort_order: 1, updatedAt: -1 })
-			.limit(10)
+		const tickets = await Ticket.paginate(options, {
+			select: ['-event_logs'],
+			sort: { sort_order: 1, updatedAt: -1 },
+			populate: { path: 'borrower', select: 'name' },
+			limit: 10,
+			page: req.query.page
+		})
 		res.send(tickets)
 	} catch (e) {
 		console.error(e.message)
