@@ -44,7 +44,7 @@ export const registerUser = (newUser, history) => async (dispatch) => {
 
 		setAuthHeader(localStorage.token)
 		// Get User's Cart
-		dispatch(loadCart())
+		dispatch(loadUser())
 		history.push('/books')
 	} catch (e) {
 		dispatch(setAlert({ header: 'Registration failed.', content: e.response.data }, 'negative'))
@@ -64,8 +64,7 @@ export const loginUser = (user, history) => async (dispatch) => {
 
 		setAuthHeader(localStorage.token)
 
-		// Get User's Cart
-		dispatch(loadCart())
+		dispatch(loadUser())
 		history.push('/books')
 	} catch (e) {
 		dispatch(setAlert({ header: 'Login failed.', content: e.response.data }, 'negative'))

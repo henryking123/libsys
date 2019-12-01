@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const ticketSchema = new mongoose.Schema(
 	{
@@ -93,6 +94,7 @@ ticketSchema.methods.updateTicket = async function({ status, sort_order, event, 
 	}
 }
 
+ticketSchema.plugin(mongoosePaginate)
 ticketSchema.plugin(require('mongoose-autopopulate'))
 
 mongoose.model('Ticket', ticketSchema)

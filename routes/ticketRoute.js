@@ -25,10 +25,16 @@ router.get('/', auth, async (req, res) => {
 // @access 	Current User
 router.get('/all', auth, async (req, res) => {
 	try {
-		const tickets = await Ticket.find({ borrower: req.user.id })
-			.select('-borrower')
-			.populate({ path: 'event_logs.by', select: 'name' })
-			.sort({ updatedAt: -1 })
+		const tickets = await Ticket.paginate(
+			{ borrower: req.user.id },
+			{
+				sort: { updatedAt: -1 },
+				limit: 10,
+				page: req.query.page,
+				select: ['-borrower'],
+				populate: { path: 'event_logs.by', select: 'name' }
+			}
+		)
 		res.send(tickets)
 	} catch (e) {
 		console.error(e.message)
