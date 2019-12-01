@@ -5,19 +5,23 @@ import TicketList from '../tickets/TicketListTemplate'
 import PropTypes from 'prop-types'
 import { Loader, Grid } from 'semantic-ui-react'
 import { reloadTickets } from '../../actions/auth'
+import axios from 'axios'
 
 export class UserTickets extends Component {
-	componentDidMount = () => {
-		this.props.reloadTickets()
+	state = { tickets: [] }
+	componentDidMount = async () => {
+		const res = await axios.get('/tickets/all')
+		await this.setState({ tickets: res.data })
 	}
 
 	// Only return active tickets
 	render() {
+		console.log(this.state.tickets)
 		if (!this.props.auth.loading) {
 			return (
 				<Grid centered columns={2}>
 					<Grid.Column>
-						<TicketList tickets={this.props.auth.user.tickets} />
+						<TicketList tickets={this.state.tickets} />
 					</Grid.Column>
 				</Grid>
 			)

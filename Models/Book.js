@@ -54,6 +54,8 @@ bookSchema.pre('save', function(next) {
 				this.available -= diff
 				next()
 			}
+		} else {
+			next()
 		}
 	} catch (e) {
 		console.error(e.message)

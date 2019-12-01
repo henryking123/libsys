@@ -84,7 +84,6 @@ const ticketSchema = new mongoose.Schema(
 ticketSchema.methods.updateTicket = async function({ status, sort_order, event, user_id }) {
 	try {
 		const ticket = this
-
 		ticket.status = status
 		ticket.sort_order = sort_order
 		ticket.event_logs.push({ status: event, by: user_id })

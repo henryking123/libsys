@@ -14,11 +14,27 @@ const User = mongoose.model('User')
 
 // @route 	GET /tickets
 // @desc 	 	Get current user's active tickets
-// @access 	Admin
-router.get('/', auth, admin, async (req, res) => {
+// @access 	Current User
+router.get('/', auth, async (req, res) => {
 	try {
 		await req.user.refreshTickets()
 		res.send(req.user.tickets)
+	} catch (e) {
+		console.error(e.message)
+		res.status(400).send(e.message)
+	}
+})
+
+// @route 	GET /tickets/all
+// @desc 	 	Get current user's all tickets
+// @access 	Current User
+router.get('/all', auth, async (req, res) => {
+	try {
+		const tickets = await Ticket.find({ borrower: req.user.id })
+			.select('-borrower')
+			.populate({ path: 'event_logs.by', select: 'name' })
+			.sort({ updatedAt: -1 })
+		res.send(tickets)
 	} catch (e) {
 		console.error(e.message)
 		res.status(400).send(e.message)
@@ -152,7 +168,7 @@ router.post('/accept', auth, admin, async (req, res) => {
 				)
 			}
 			// If all is clear
-			book.available -= 1
+			book.available = book.available - 1
 			await book.save()
 
 			await ticket.updateTicket({
