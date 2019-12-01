@@ -45,12 +45,19 @@ bookSchema.virtual('borrowHistory', { ref: 'Ticket', localField: '_id', foreignF
 
 // Editing the value of `available` when `quantity` is changed.
 bookSchema.pre('save', function(next) {
-	if (this.isModified('quantity')) {
-		const diff = this.quantity - this.oldQuantity
-		this.available += diff
+	try {
+		if (this.isModified('quantity')) {
+			if (this.quantity < this.available) {
+				throw new Error('Invalid updates.')
+			} else {
+				const diff = this.oldQuantity - this.quantity
+				this.available -= diff
+				next()
+			}
+		}
+	} catch (e) {
+		console.error(e.message)
 	}
-
-	next()
 })
 
 bookSchema.plugin(mongoosePaginate)

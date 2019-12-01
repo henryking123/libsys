@@ -23,14 +23,16 @@ class BookFormEdit extends Component {
 	async componentDidMount() {
 		// Get the book from DB and then set the value to form
 		const res = await axios.get(`/books/${this.book_id}`)
-		const { title, yearPublished, author, description, quantity } = res.data
+		const { title, yearPublished, author, description, quantity, available } = res.data
 		await this.setState({
 			title: title || '',
 			yearPublished: yearPublished || '',
 			author: author || '',
 			description: description || '',
 			quantity: quantity || 0,
-			loading: false
+			available: available || 0,
+			loading: false,
+			min: quantity - available || 0
 		})
 	}
 
@@ -44,12 +46,15 @@ class BookFormEdit extends Component {
 		const updatedBook = this.state
 		delete updatedBook.loading
 		delete updatedBook.loadingSubmit
+		delete updatedBook.min
+		delete updatedBook.available
 		await axios.patch(`/books/${this.book_id}`, updatedBook)
 		await this.setState({ loadingSubmit: false })
 		this.props.history.push(`/books/${this.book_id}`)
 	}
 
 	render() {
+		console.log(this.state.min)
 		return (
 			<React.Fragment>
 				<Form autoComplete="off" onSubmit={this.onSubmit} loading={this.state.loading}>
@@ -91,12 +96,10 @@ class BookFormEdit extends Component {
 						/>
 					</Form.Field>
 					<Form.Input
-						label="Quantity"
+						label={`Quantity (Active Tickets/Minimum: ${this.state.min})`}
 						type="number"
-						min={0}
-						// @todo For testing
-						// min={this.state.quantity - this.state.available}
-						width={3}
+						min={this.state.min}
+						width={4}
 						name="quantity"
 						onChange={this.handleChange}
 						value={this.state.quantity}
