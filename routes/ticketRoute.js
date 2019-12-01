@@ -196,6 +196,9 @@ router.post('/accept', auth, admin, async (req, res) => {
 				user_id: req.user.id
 			})
 
+			ticket.to = Date.now()
+			await ticket.save()
+
 			const book = await Book.findById(ticket.book._id)
 			book.available += 1
 			await book.save()
