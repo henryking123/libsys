@@ -48,18 +48,22 @@ class Search extends Component {
 				{data.docs ? (
 					<React.Fragment>
 						<List books={data.docs} />
-						<Pagination
-							activePage={activePage}
-							ellipsisItem={{ content: <Icon name="ellipsis horizontal" />, icon: true }}
-							firstItem={{ content: <Icon name="angle double left" />, icon: true }}
-							lastItem={{ content: <Icon name="angle double right" />, icon: true }}
-							prevItem={{ content: <Icon name="angle left" />, icon: true }}
-							nextItem={{ content: <Icon name="angle right" />, icon: true }}
-							style={{ marginBottom: '20px' }}
-							totalPages={data.totalPages}
-							onPageChange={this.handlePaginationChange}
-							floated="right"
-						/>
+						{data.totalPages > 1 ? (
+							<Pagination
+								activePage={activePage}
+								ellipsisItem={{ content: <Icon name="ellipsis horizontal" />, icon: true }}
+								firstItem={{ content: <Icon name="angle double left" />, icon: true }}
+								lastItem={{ content: <Icon name="angle double right" />, icon: true }}
+								prevItem={{ content: <Icon name="angle left" />, icon: true }}
+								nextItem={{ content: <Icon name="angle right" />, icon: true }}
+								style={{ marginBottom: '20px' }}
+								totalPages={data.totalPages}
+								onPageChange={this.handlePaginationChange}
+								floated="right"
+							/>
+						) : (
+							''
+						)}
 					</React.Fragment>
 				) : (
 					''
