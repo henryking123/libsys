@@ -27,11 +27,7 @@ class Tickets extends Component {
 					</Label>
 				)
 			default:
-				return (
-					<Label ribbon color="grey">
-						{status}
-					</Label>
-				)
+				return <Label ribbon>{status}</Label>
 		}
 	}
 
@@ -64,11 +60,11 @@ class Tickets extends Component {
 													</Header>
 												</Item.Header>
 												<Item.Description>
-													<em>
-														{event_logs[event_logs.length - 1].status} by{' '}
-														{event_logs[event_logs.length - 1].by.name} (
-														{moment(event_logs[event_logs.length - 1].time).format('')})
-													</em>
+													{event_logs[event_logs.length - 1].status} by{' '}
+													{event_logs[event_logs.length - 1].by.name}{' '}
+													<small>
+														({moment(event_logs[event_logs.length - 1].time).format('lll')})
+													</small>
 												</Item.Description>
 											</Item.Content>
 										</Item>

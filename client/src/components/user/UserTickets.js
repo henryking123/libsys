@@ -27,6 +27,7 @@ export class UserTickets extends Component {
 	// Only return active tickets
 	render() {
 		const { data, activePage } = this.state
+		console.log(data.docs)
 
 		return (
 			<Grid centered columns={2}>
