@@ -34,6 +34,7 @@ class BookFormEdit extends Component {
 			loading: false,
 			min: quantity - available || 0
 		})
+		console.log(this.state.quantity, this.state.available)
 	}
 
 	handleChange = (e, { name, value }) => {

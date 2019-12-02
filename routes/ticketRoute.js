@@ -174,7 +174,7 @@ router.post('/accept', auth, admin, async (req, res) => {
 				)
 			}
 			// If all is clear
-			book.available = book.available - 1
+			book.available -= 1
 			await book.save()
 
 			await ticket.updateTicket({
