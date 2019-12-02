@@ -28,7 +28,7 @@ class Tickets extends Component {
 				)
 			default:
 				return (
-					<Label ribbon color="red">
+					<Label ribbon color="grey">
 						{status}
 					</Label>
 				)

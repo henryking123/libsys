@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Loader, Item, Button, Label, Table, Header } from 'semantic-ui-react'
+import { Item, Button, Label, Table, Header } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { setAlert } from '../../actions/alert'
@@ -181,7 +181,6 @@ class UserBooks extends Component {
 				return <div>bye</div>
 			}
 		}
-		return <Loader active inline="centered" />
 	}
 }
 

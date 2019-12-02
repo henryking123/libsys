@@ -19,7 +19,7 @@ class User extends Component {
 	}
 
 	render() {
-		if (!this.props.match.params.user_id && !this.props.auth.loading) {
+		if (!this.props.match.params.user_id) {
 			// Pass user from redux instead
 			return (
 				<Grid>

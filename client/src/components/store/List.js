@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Loader, Item, Label } from 'semantic-ui-react'
+import { Button, Item, Label } from 'semantic-ui-react'
 import moment from 'moment'
 // Redux
 import PropTypes from 'prop-types'
@@ -45,9 +45,6 @@ class List extends Component {
 	}
 
 	render() {
-		if (this.props.auth.loading) {
-			return <Loader active inline="centered" />
-		}
 		return (
 			<Item.Group divided>
 				{this.props.books.map(({ title, author, yearPublished, available, _id }) => (

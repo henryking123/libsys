@@ -49,6 +49,8 @@ router.get('/search', auth, async (req, res) => {
 router.get('/:book_id', auth, async (req, res) => {
 	try {
 		let book = {}
+		// If user is admin, return book with edit history and borrow history
+		// Otherwise, return only the book
 		if (!req.user.isAdmin) {
 			book = await Book.findById(req.params.book_id).select('-editHistory')
 		} else {

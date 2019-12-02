@@ -13,7 +13,7 @@ const PrivateRoute = ({
 		<Route
 			{...rest}
 			render={(props) => {
-				if (loading || !user) {
+				if (loading) {
 					return <Loader active inline="centered" />
 				} else if (isAuthenticated) {
 					return <Component {...props} />

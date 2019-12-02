@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Label, Item, Table, Checkbox, Button, Icon, Loader } from 'semantic-ui-react'
+import { Label, Item, Table, Checkbox, Button, Icon } from 'semantic-ui-react'
 import { loadCart, removeFromCart, checkout } from '../../actions/cart'
 import { loadUser } from '../../actions/auth'
 import { Link, withRouter } from 'react-router-dom'
@@ -65,9 +65,7 @@ class Cart extends Component {
 
 	render() {
 		const { checkedItems } = this.state
-		if (this.props.auth.loading) {
-			return <Loader active inline="centered" />
-		}
+
 		return (
 			<Table celled>
 				<Table.Header>
