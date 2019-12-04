@@ -225,6 +225,7 @@ class Ticket extends Component {
 
 Ticket.propTypes = {
 	auth: PropTypes.object,
+	match: PropTypes.object,
 	setAlert: PropTypes.func.isRequired
 }
 

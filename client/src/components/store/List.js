@@ -4,6 +4,7 @@ import moment from 'moment'
 // Redux
 import PropTypes from 'prop-types'
 import { addToCart, removeFromCart } from '../../actions/cart'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 class List extends Component {
@@ -62,7 +63,9 @@ class List extends Component {
 						/>
 
 						<Item.Content verticalAlign="middle">
-							<Item.Header as="a">{title}</Item.Header>
+							<Item.Header as={Link} to={`/books/${_id}`}>
+								{title}
+							</Item.Header>
 
 							<Item.Extra>
 								{this.renderAvailability(available)}

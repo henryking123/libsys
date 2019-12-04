@@ -41,8 +41,6 @@ const bookSchema = new mongoose.Schema(
 bookSchema.set('toObject', { virtuals: true })
 bookSchema.set('toJSON', { virtuals: true })
 
-bookSchema.virtual('borrowHistory', { ref: 'Ticket', localField: '_id', foreignField: 'book' })
-
 // Editing the value of `available` when `quantity` is changed.
 bookSchema.pre('save', function(next) {
 	if (this.isModified('quantity')) {

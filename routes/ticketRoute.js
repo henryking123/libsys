@@ -92,7 +92,7 @@ router.get('/all/:sort_order', auth, admin, async (req, res) => {
 	}
 })
 
-// @route 	GET /ticket/:ticket_id
+// @route 	GET /tickets/:ticket_id
 // @desc 	 	Get ticket details
 // @access 	Admin
 router.get('/:ticket_id', auth, async (req, res) => {
@@ -114,6 +114,10 @@ router.get('/:ticket_id', auth, async (req, res) => {
 		res.status(400).send(e.message)
 	}
 })
+
+// @route 	GET /tickets/book/:book_id
+// @desc 	 	Get tickets for specific book
+// @access 	Admin
 
 // @route 	POST /accept
 // @desc 	 	Accepting a borrow/return/pickup request

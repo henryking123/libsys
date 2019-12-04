@@ -54,16 +54,10 @@ router.get('/:book_id', auth, async (req, res) => {
 		if (!req.user.isAdmin) {
 			book = await Book.findById(req.params.book_id).select('-editHistory')
 		} else {
-			book = await Book.findById(req.params.book_id)
-				.populate('editHistory.updatedBy', ['name', 'email'])
-				.populate({
-					path: 'borrowHistory',
-					select: ['borrower', 'from', 'to', 'status'],
-					populate: {
-						path: 'borrower',
-						select: ['name', 'email', 'studentId', 'employeeId', 'isAdmin']
-					}
-				})
+			book = await Book.findById(req.params.book_id).populate('editHistory.updatedBy', [
+				'name',
+				'email'
+			])
 		}
 
 		if (!book) throw new Error('Book not found.')
@@ -73,6 +67,10 @@ router.get('/:book_id', auth, async (req, res) => {
 		res.status(500).send(e.message)
 	}
 })
+
+// @route 	GET /tickets/books/:book_id/
+// @desc 		Read details of a book
+// @access 	Admin, Students
 
 // @route 	POST /books
 // @desc 		Add new Book

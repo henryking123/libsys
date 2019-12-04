@@ -1,8 +1,8 @@
-// @todo - Minimum of quantity is quantity - available
 import React, { Component } from 'react'
 import { Form } from 'semantic-ui-react'
 import { YearInput } from 'semantic-ui-calendar-react'
 import axios from 'axios'
+import PropTypes from 'prop-types'
 
 class BookFormEdit extends Component {
 	constructor(props) {
@@ -112,6 +112,10 @@ class BookFormEdit extends Component {
 			</React.Fragment>
 		)
 	}
+}
+
+BookFormEdit.propTypes = {
+	match: PropTypes.object
 }
 
 export default BookFormEdit
