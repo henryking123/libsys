@@ -84,9 +84,7 @@ export class AllTickets extends Component {
 									<Icon name="close" /> Decline
 								</Button>
 							</Item.Extra>
-						) : (
-							''
-						)}
+						) : null}
 					</Item.Content>
 				</Item>
 			)
