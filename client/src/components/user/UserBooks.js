@@ -145,7 +145,7 @@ class UserBooks extends Component {
 							</Table.Header>
 
 							<Table.Body>
-								{user.tickets.map(({ book: { title }, sort_order, status, event_logs, _id }) => {
+								{user.tickets.map(({ book, sort_order, status, event_logs, _id }) => {
 									return (
 										<Table.Row key={_id}>
 											<Table.Cell>{this.ribbon(sort_order, status)}</Table.Cell>
@@ -156,7 +156,7 @@ class UserBooks extends Component {
 														<Item.Content>
 															<Item.Header>
 																<Header as="h3">
-																	<Link to={`/tickets/${_id}`}>{title}</Link>
+																	<Link to={`/books/${book._id}`}>{book.title}</Link>
 																</Header>
 															</Item.Header>
 															<Item.Description>

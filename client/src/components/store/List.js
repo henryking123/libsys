@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Item, Label } from 'semantic-ui-react'
+import { Button, Item, Label, Header } from 'semantic-ui-react'
 import moment from 'moment'
 // Redux
 import PropTypes from 'prop-types'
@@ -45,6 +45,13 @@ class List extends Component {
 	}
 
 	render() {
+		if (!this.props.books.length)
+			return (
+				<Header as="h4" style={{ textAlign: 'center', marginTop: '20px' }}>
+					No results found.
+				</Header>
+			)
+
 		return (
 			<Item.Group divided>
 				{this.props.books.map(({ title, author, yearPublished, available, _id }) => (

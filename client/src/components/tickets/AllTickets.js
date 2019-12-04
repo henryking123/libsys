@@ -129,7 +129,15 @@ export class AllTickets extends Component {
 					/>
 				</Menu>
 				<Segment>
-					<Item.Group divided>{data.docs ? this.renderList() : ''}</Item.Group>
+					<Item.Group divided>
+						{!data.docs || !Object.keys(data.docs).length ? (
+							<Header as="h4" textAlign="center">
+								No results found.
+							</Header>
+						) : (
+							this.renderList()
+						)}
+					</Item.Group>
 					{data.totalPages > 1 ? (
 						<Pagination
 							activePage={activePage}
