@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import moment from 'moment'
+import moment, { isMoment } from 'moment'
 import { Header, Grid, Label, Loader, Table, Icon, Button } from 'semantic-ui-react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { setAlert } from '../../actions/alert'
 
@@ -204,7 +205,10 @@ class Ticket extends Component {
 						<Header.Subheader>
 							Borrower: <strong>{ticket.borrower.name}</strong>
 							<br />
-							Book: <strong>{ticket.book.title}</strong>{' '}
+							Book:{' '}
+							<Link to={`/books/${ticket.book._id}`}>
+								<strong>{ticket.book.title}</strong>
+							</Link>{' '}
 							{ticket.book.author ? (
 								<React.Fragment>
 									by <strong>{ticket.book.author}</strong>
