@@ -12,7 +12,7 @@ router.get('/all', auth, async (req, res) => {
 	try {
 		const response = await Book.paginate(
 			{},
-			{ sort: { updatedAt: -1 }, limit: 5, page: req.query.page }
+			{ sort: { createdAt: -1 }, limit: 5, page: req.query.page }
 		)
 		res.send(response)
 	} catch (e) {
