@@ -44,6 +44,7 @@ class Search extends Component {
 					value={this.state.search}
 					onChange={(e) => this.onChange(e)}
 					name="search"
+					autoComplete="off"
 				/>
 				{data.docs ? (
 					<React.Fragment>
