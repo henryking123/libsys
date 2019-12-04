@@ -178,7 +178,11 @@ class UserBooks extends Component {
 					</div>
 				)
 			} else {
-				return <div>bye</div>
+				return (
+					<Header as="h3" style={{ textAlign: 'center', marginTop: '20px' }}>
+						Book list is empty.
+					</Header>
+				)
 			}
 		}
 	}

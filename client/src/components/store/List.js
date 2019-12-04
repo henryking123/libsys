@@ -48,7 +48,7 @@ class List extends Component {
 	render() {
 		if (!this.props.books.length)
 			return (
-				<Header as="h4" style={{ textAlign: 'center', marginTop: '20px' }}>
+				<Header as="h3" style={{ textAlign: 'center', marginTop: '20px' }}>
 					No results found.
 				</Header>
 			)

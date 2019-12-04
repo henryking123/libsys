@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Label, Item, Table, Checkbox, Button, Icon } from 'semantic-ui-react'
+import { Label, Item, Table, Checkbox, Button, Icon, Header } from 'semantic-ui-react'
 import { loadCart, removeFromCart, checkout } from '../../actions/cart'
 import { loadUser } from '../../actions/auth'
 import { Link, withRouter } from 'react-router-dom'
@@ -65,6 +65,13 @@ class Cart extends Component {
 
 	render() {
 		const { checkedItems } = this.state
+
+		if (this.props.cart.length === 0)
+			return (
+				<Header as="h3" style={{ textAlign: 'center', marginTop: '20px' }}>
+					Cart is empty.
+				</Header>
+			)
 
 		return (
 			<Table celled>

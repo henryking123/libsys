@@ -34,6 +34,13 @@ class Tickets extends Component {
 	render = () => {
 		const { tickets } = this.props
 
+		if (tickets.length === 0)
+			return (
+				<Header as="h3" style={{ textAlign: 'center', marginTop: '20px' }}>
+					Ticket list is empty.
+				</Header>
+			)
+
 		return (
 			<div>
 				<Table compact>
