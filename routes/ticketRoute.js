@@ -98,14 +98,17 @@ router.get('/all/:sort_order', auth, admin, async (req, res) => {
 router.get('/:ticket_id', auth, async (req, res) => {
 	try {
 		// If Admin or user is the owner of ticket, return Ticket
-		const ticket = await Ticket.findById(req.params.ticket_id)
+		const ticket = await Ticket.findById(req.params.ticket_id).populate({
+			path: 'event_logs.by',
+			select: ['name']
+		})
 
 		if (!ticket) throw new Error('Invalid ticket')
 
 		if (!req.user.isAdmin && ticket.borrower.id.toString() !== req.user._id.toString())
 			throw new Error('Invalid ticket')
 
-		res.send({ ticket })
+		res.send(ticket)
 	} catch (e) {
 		console.error(e.message)
 		res.status(400).send(e.message)
