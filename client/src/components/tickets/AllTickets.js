@@ -6,6 +6,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { setAlert } from '../../actions/alert'
 import PropTypes from 'prop-types'
+import AdminTicketButtons from '../buttons/AdminTicketButtons'
 
 export class AllTickets extends Component {
 	state = { options: 1, data: {}, activePage: 1 }
@@ -31,64 +32,37 @@ export class AllTickets extends Component {
 		return res.data
 	}
 
-	acceptTicket = async (ticket_id) => {
-		try {
-			const res = await axios.post('/tickets/accept', { ticket_id })
-			this.props.setAlert(res.data, 'positive')
-			const data = await this.getTickets(this.state.options)
-			await this.setState({ data })
-		} catch (e) {
-			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			const data = await this.getTickets(this.state.options)
-			await this.setState({ data })
-		}
-	}
-
-	declineTicket = async (ticket_id) => {
-		try {
-			const res = await axios.post('/tickets/decline', { ticket_id })
-			this.props.setAlert(res.data, 'positive')
-			const data = await this.getTickets(this.state.options)
-			await this.setState({ data })
-		} catch (e) {
-			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			const data = await this.getTickets(this.state.options)
-			await this.setState({ data })
-		}
+	onButtonClick = async () => {
+		const data = await this.getTickets(this.state.options)
+		await this.setState({ data })
 	}
 
 	renderList = () => {
-		return this.state.data.docs.map(
-			({ _id, book: { title }, borrower: { name, id: user_id }, sort_order, status }) => (
-				<Item key={_id}>
+		return this.state.data.docs.map((ticket) => {
+			const { book, borrower, status } = ticket
+			return (
+				<Item key={ticket._id}>
 					<Item.Image size="tiny" src="/thumbnail.png" />
 					<Item.Content>
 						<Item.Header>
 							<Header as="h3">
-								<Link to={`/tickets/${_id}`}>{title}</Link>
+								<Link to={`/tickets/${ticket._id}`}>{book.title}</Link>
 							</Header>
 						</Item.Header>
 						<Item.Description>
 							<em>User: </em>
-							<Link to={`/users/${user_id}`}>{name}</Link>
+							<Link to={`/users/${borrower._id}`}>{borrower.name}</Link>
 						</Item.Description>
 						<Item.Meta>
 							<em>{status}</em>
 						</Item.Meta>
-						{sort_order === 1 || sort_order === 2 || sort_order === 3 ? (
-							<Item.Extra>
-								<Button positive floated="left" onClick={() => this.acceptTicket(_id)}>
-									<Icon name="check" /> Accept
-								</Button>
-								<Button negative floated="left" onClick={() => this.declineTicket(_id)}>
-									<Icon name="close" /> Decline
-								</Button>
-							</Item.Extra>
-						) : null}
+						<Item.Extra>
+							<AdminTicketButtons ticket={ticket} onButtonClick={this.onButtonClick} />
+						</Item.Extra>
 					</Item.Content>
 				</Item>
 			)
-		)
+		})
 	}
 
 	render() {

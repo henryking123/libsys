@@ -6,11 +6,14 @@ import moment from 'moment'
 import ActiveTicketButtons from '../buttons/ActiveTicketButtons'
 import CartButtons from '../buttons/CartButtons'
 import { connect } from 'react-redux'
+import { reloadTickets } from '../../actions/auth'
 
 class Book extends Component {
 	state = { book: {}, activeTicket: {} }
 
 	componentDidMount = async () => {
+		await this.props.reloadTickets()
+
 		const { tickets } = this.props.auth.user
 
 		const res = await axios.get(`/books/${this.props.match.params.book_id}`)
@@ -31,6 +34,12 @@ class Book extends Component {
 		} else if (available < 5) {
 			return <Label color="orange">Only {available} left</Label>
 		}
+	}
+
+	onButtonClick = async () => {
+		const res = await axios.get(`/tickets/${this.state.activeTicket._id}`)
+		const activeTicket = res.data
+		await this.setState({ activeTicket })
 	}
 
 	render() {
@@ -68,10 +77,7 @@ class Book extends Component {
 					</Item.Group>
 
 					{Object.keys(activeTicket).length && activeTicket.sort_order < 5 ? (
-						<ActiveTicketButtons
-							ticket={activeTicket}
-							onButtonClick={(ticket) => this.setState({ activeTicket: ticket })}
-						/>
+						<ActiveTicketButtons ticket={activeTicket} onButtonClick={this.onButtonClick} />
 					) : (
 						<CartButtons book={book} />
 					)}
@@ -84,9 +90,10 @@ class Book extends Component {
 Book.propTypes = {
 	match: PropTypes.object,
 	auth: PropTypes.object,
-	cart: PropTypes.array
+	cart: PropTypes.array,
+	reloadTickets: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ auth, cart }) => ({ auth, cart })
 
-export default connect(mapStateToProps)(Book)
+export default connect(mapStateToProps, { reloadTickets })(Book)

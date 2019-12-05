@@ -12,10 +12,10 @@ class ActiveTicketButtons extends Component {
 			const res = await axios.post('/tickets/cancel', { ticket_id })
 			this.props.setAlert(res.data, 'positive')
 			// Reload Ticket
-			this.getTicket(ticket_id)
+			this.props.onButtonClick()
 		} catch (e) {
 			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			this.getTicket(ticket_id)
+			this.props.onButtonClick()
 		}
 	}
 
@@ -24,18 +24,11 @@ class ActiveTicketButtons extends Component {
 			// Send to return route
 			const res = await axios.post('/tickets/return', { ticket_id })
 			this.props.setAlert(res.data, 'positive')
-			// Reload Ticket
-			this.getTicket(ticket_id)
+			this.props.onButtonClick()
 		} catch (e) {
 			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			this.getTicket(ticket_id)
+			this.props.onButtonClick()
 		}
-	}
-
-	getTicket = async (ticket_id) => {
-		const res = await axios.get(`/tickets/${ticket_id}`)
-		const ticket = res.data
-		this.props.onButtonClick(ticket)
 	}
 
 	render() {

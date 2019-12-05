@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import moment, { isMoment } from 'moment'
+import moment from 'moment'
 import { Header, Grid, Label, Loader, Table, Icon, Button } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { setAlert } from '../../actions/alert'
+import ActiveTicketButtons from '../buttons/ActiveTicketButtons'
+import AdminTicketButtons from '../buttons/AdminTicketButtons'
 
 class Ticket extends Component {
 	state = { ticket: {} }
@@ -59,134 +61,12 @@ class Ticket extends Component {
 		)
 	}
 
-	renderButtons = (sort_order, _id) => {
-		if (this.state.ticket.borrower._id.toString() !== this.props.auth.user._id.toString())
-			return null
-
-		switch (sort_order) {
-			case 1:
-				return (
-					// For Pick Up
-					<Button
-						floated="left"
-						icon="close"
-						labelPosition="left"
-						content="Cancel Pick Up"
-						onClick={() => this.cancelTicket(_id)}
-					/>
-				)
-			case 2:
-				return (
-					// Pending Borrow
-					<Button
-						floated="left"
-						icon="close"
-						labelPosition="left"
-						content="Cancel Borrow Request"
-						onClick={() => this.cancelTicket(_id)}
-					/>
-				)
-			case 3:
-				// Pending Return
-				return (
-					<Button
-						floated="left"
-						icon="close"
-						labelPosition="left"
-						content="Cancel Return Request"
-						onClick={() => this.cancelTicket(_id)}
-					/>
-				)
-			case 4:
-				// Borrowed/Active
-				return (
-					<Button
-						floated="left"
-						icon="right chevron"
-						positive
-						labelPosition="left"
-						content="Return Book"
-						onClick={() => this.returnTicket(_id)}
-					/>
-				)
-			default:
-				return
-		}
+	componentDidMount = async () => {
+		const res = await axios.get(`/tickets/${this.props.match.params.ticket_id}`)
+		this.setState({ ticket: res.data })
 	}
 
-	renderAdminButtons = (sort_order, _id) => {
-		if (!this.props.auth.user.isAdmin) return null
-
-		if (sort_order === 1 || sort_order === 2 || sort_order === 3)
-			return (
-				<React.Fragment>
-					<Button positive floated="left" onClick={() => this.acceptTicket(_id)}>
-						<Icon name="check" /> Accept
-					</Button>
-					<Button negative floated="left" onClick={() => this.declineTicket(_id)}>
-						<Icon name="close" /> Decline
-					</Button>
-				</React.Fragment>
-			)
-	}
-
-	cancelTicket = async (ticket_id) => {
-		try {
-			// Send to cancel route
-			const res = await axios.post('/tickets/cancel', { ticket_id })
-			this.props.setAlert(res.data, 'positive')
-			// Reload Ticket
-			this.getTicket()
-		} catch (e) {
-			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			this.getTicket()
-		}
-	}
-
-	returnTicket = async (ticket_id) => {
-		try {
-			// Send to return route
-			const res = await axios.post('/tickets/return', { ticket_id })
-			this.props.setAlert(res.data, 'positive')
-			// Reload Ticket
-			this.getTicket()
-		} catch (e) {
-			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			this.getTicket()
-		}
-	}
-
-	acceptTicket = async (ticket_id) => {
-		try {
-			const res = await axios.post('/tickets/accept', { ticket_id })
-			this.props.setAlert(res.data, 'positive')
-			// Reload Ticket
-			this.getTicket()
-		} catch (e) {
-			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			// Reload Ticket
-			this.getTicket()
-		}
-	}
-
-	declineTicket = async (ticket_id) => {
-		try {
-			const res = await axios.post('/tickets/decline', { ticket_id })
-			this.props.setAlert(res.data, 'positive')
-			// Reload Ticket
-			this.getTicket()
-		} catch (e) {
-			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			// Reload Ticket
-			this.getTicket()
-		}
-	}
-
-	componentDidMount = () => {
-		this.getTicket()
-	}
-
-	getTicket = async () => {
+	onButtonClick = async () => {
 		const res = await axios.get(`/tickets/${this.props.match.params.ticket_id}`)
 		this.setState({ ticket: res.data })
 	}
@@ -198,8 +78,8 @@ class Ticket extends Component {
 
 		console.log(ticket)
 		return (
-			<Grid centered columns={2}>
-				<Grid.Column>
+			<Grid centered columns={1}>
+				<Grid.Column width={10}>
 					<Header as="h2">
 						Ticket #{ticket._id.slice(-7)} {this.renderLabel(ticket.sort_order, ticket.status)}
 						<Header.Subheader>
@@ -219,8 +99,12 @@ class Ticket extends Component {
 
 					{this.renderEventLogs(ticket.event_logs)}
 
-					{this.renderButtons(ticket.sort_order, ticket._id)}
-					{this.renderAdminButtons(ticket.sort_order, ticket._id)}
+					{ticket.borrower._id.toString() === this.props.auth.user._id.toString() ? (
+						<ActiveTicketButtons ticket={ticket} onButtonClick={this.onButtonClick} />
+					) : (
+						''
+					)}
+					<AdminTicketButtons ticket={ticket} onButtonClick={this.onButtonClick} />
 				</Grid.Column>
 			</Grid>
 		)

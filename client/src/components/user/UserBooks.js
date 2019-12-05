@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { setAlert } from '../../actions/alert'
 import { reloadTickets } from '../../actions/auth'
+import ActiveTicketButtons from '../buttons/ActiveTicketButtons'
 
 class UserBooks extends Component {
 	componentDidMount = () => {
@@ -42,91 +43,6 @@ class UserBooks extends Component {
 		}
 	}
 
-	renderButtons = (sort_order, _id) => {
-		switch (sort_order) {
-			case 1:
-				return (
-					// For Pick Up
-					<Item.Extra>
-						<Button
-							floated="left"
-							icon="close"
-							labelPosition="left"
-							content="Cancel Pick Up"
-							onClick={() => this.cancelTicket(_id)}
-						/>
-					</Item.Extra>
-				)
-			case 2:
-				return (
-					// Pending Borrow
-					<Item.Extra>
-						<Button
-							floated="left"
-							icon="close"
-							labelPosition="left"
-							content="Cancel Borrow Request"
-							onClick={() => this.cancelTicket(_id)}
-						/>
-					</Item.Extra>
-				)
-			case 3:
-				// Pending Return
-				return (
-					<Item.Extra>
-						<Button
-							floated="left"
-							icon="close"
-							labelPosition="left"
-							content="Cancel Return Request"
-							onClick={() => this.cancelTicket(_id)}
-						/>
-					</Item.Extra>
-				)
-			case 4:
-				// Borrowed/Active
-				return (
-					<Item.Extra>
-						<Button
-							floated="left"
-							icon="right chevron"
-							positive
-							labelPosition="left"
-							content="Return Book"
-							onClick={() => this.returnTicket(_id)}
-						/>
-					</Item.Extra>
-				)
-			default:
-				return
-		}
-	}
-
-	cancelTicket = async (ticket_id) => {
-		try {
-			// Send to cancel route
-			const res = await axios.post('/tickets/cancel', { ticket_id })
-			this.props.setAlert(res.data, 'positive')
-			// Reload Tickets
-			await this.props.reloadTickets()
-		} catch (e) {
-			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			await this.props.reloadTickets()
-		}
-	}
-	returnTicket = async (ticket_id) => {
-		try {
-			// Send to return route
-			const res = await axios.post('/tickets/return', { ticket_id })
-			this.props.setAlert(res.data, 'positive')
-			// Reload Tickets
-			await this.props.reloadTickets()
-		} catch (e) {
-			this.props.setAlert({ header: 'Process failed.', content: e.response.data }, 'negative')
-			await this.props.reloadTickets()
-		}
-	}
-
 	render() {
 		const { user } = this.props.auth
 
@@ -145,10 +61,10 @@ class UserBooks extends Component {
 							</Table.Header>
 
 							<Table.Body>
-								{user.tickets.map(({ book, sort_order, status, event_logs, _id }) => {
+								{user.tickets.map((ticket) => {
 									return (
-										<Table.Row key={_id}>
-											<Table.Cell>{this.ribbon(sort_order, status)}</Table.Cell>
+										<Table.Row key={ticket._id}>
+											<Table.Cell>{this.ribbon(ticket.sort_order, ticket.status)}</Table.Cell>
 											<Table.Cell>
 												<Item.Group relaxed>
 													<Item>
@@ -156,16 +72,19 @@ class UserBooks extends Component {
 														<Item.Content>
 															<Item.Header>
 																<Header as="h3">
-																	<Link to={`/books/${book._id}`}>{book.title}</Link>
+																	<Link to={`/books/${ticket.book._id}`}>{ticket.book.title}</Link>
 																</Header>
 															</Item.Header>
 															<Item.Description>
 																<em>
-																	{event_logs[event_logs.length - 1].status} by{' '}
-																	{event_logs[event_logs.length - 1].by.name}
+																	{ticket.event_logs[ticket.event_logs.length - 1].status} by{' '}
+																	{ticket.event_logs[ticket.event_logs.length - 1].by.name}
 																</em>
 															</Item.Description>
-															{this.renderButtons(sort_order, _id)}
+															<ActiveTicketButtons
+																ticket={ticket}
+																onButtonClick={this.props.reloadTickets}
+															/>
 														</Item.Content>
 													</Item>
 												</Item.Group>

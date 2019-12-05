@@ -8,7 +8,7 @@ import { Button } from 'semantic-ui-react'
 export class CartButtons extends Component {
 	render() {
 		const { available, _id } = this.props.book
-		const { cart, removeFromCart, addToCart, checkout, history } = this.props
+		const { cart, removeFromCart, addToCart, checkout, history, borrowNow = true } = this.props
 
 		if (cart.some((cart) => cart._id === _id)) {
 			return (
@@ -26,14 +26,17 @@ export class CartButtons extends Component {
 			return (
 				<React.Fragment>
 					{/* Make Color Yellow */}
-					<Button
-						positive
-						floated="right"
-						content="Borrow Now"
-						onClick={() => checkout({ checkoutItems: [_id], history: history })}
-						icon="right chevron"
-						labelPosition="right"
-					/>
+					{borrowNow ? (
+						<Button
+							positive
+							floated="right"
+							content="Borrow Now"
+							onClick={() => checkout({ checkoutItems: [_id], history: history })}
+							icon="right chevron"
+							labelPosition="right"
+						/>
+					) : null}
+
 					<Button
 						positive
 						floated="right"
@@ -53,7 +56,8 @@ CartButtons.propTypes = {
 	addToCart: PropTypes.func.isRequired,
 	checkout: PropTypes.func.isRequired,
 	cart: PropTypes.array,
-	book: PropTypes.object.isRequired
+	book: PropTypes.object.isRequired,
+	borrowNow: PropTypes.bool
 }
 
 const mapStateToProps = ({ cart }) => ({ cart })
