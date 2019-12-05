@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Item, Button, Label, Table, Header } from 'semantic-ui-react'
+import { Item, Grid, Label, Table, Header } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import { setAlert } from '../../actions/alert'
 import { reloadTickets } from '../../actions/auth'
 import ActiveTicketButtons from '../buttons/ActiveTicketButtons'
@@ -49,52 +48,58 @@ class UserBooks extends Component {
 		if (user) {
 			if (user.tickets.length > 0) {
 				return (
-					<div>
-						<Table compact>
-							<Table.Header>
-								<Table.Row>
-									<Table.HeaderCell width={2} textAlign="center">
-										Status
-									</Table.HeaderCell>
-									<Table.HeaderCell width={14}>Book</Table.HeaderCell>
-								</Table.Row>
-							</Table.Header>
+					<Grid centered columns={1}>
+						<Grid.Column width={10}>
+							<Table compact>
+								<Table.Header>
+									<Table.Row>
+										<Table.HeaderCell width={2} textAlign="center">
+											Status
+										</Table.HeaderCell>
+										<Table.HeaderCell width={14}>Book</Table.HeaderCell>
+									</Table.Row>
+								</Table.Header>
 
-							<Table.Body>
-								{user.tickets.map((ticket) => {
-									return (
-										<Table.Row key={ticket._id}>
-											<Table.Cell>{this.ribbon(ticket.sort_order, ticket.status)}</Table.Cell>
-											<Table.Cell>
-												<Item.Group relaxed>
-													<Item>
-														<Item.Image size="tiny" src="/thumbnail.png" />
-														<Item.Content>
-															<Item.Header>
-																<Header as="h3">
-																	<Link to={`/books/${ticket.book._id}`}>{ticket.book.title}</Link>
-																</Header>
-															</Item.Header>
-															<Item.Description>
-																<em>
-																	{ticket.event_logs[ticket.event_logs.length - 1].status} by{' '}
-																	{ticket.event_logs[ticket.event_logs.length - 1].by.name}
-																</em>
-															</Item.Description>
-															<ActiveTicketButtons
-																ticket={ticket}
-																onButtonClick={this.props.reloadTickets}
-															/>
-														</Item.Content>
-													</Item>
-												</Item.Group>
-											</Table.Cell>
-										</Table.Row>
-									)
-								})}
-							</Table.Body>
-						</Table>
-					</div>
+								<Table.Body>
+									{user.tickets.map((ticket) => {
+										return (
+											<Table.Row key={ticket._id}>
+												<Table.Cell>{this.ribbon(ticket.sort_order, ticket.status)}</Table.Cell>
+												<Table.Cell>
+													<Item.Group relaxed>
+														<Item>
+															<Item.Image size="tiny" src="/thumbnail.png" />
+															<Item.Content>
+																<Item.Header>
+																	<Header as="h3">
+																		<Link to={`/books/${ticket.book._id}`}>
+																			{ticket.book.title}
+																		</Link>
+																	</Header>
+																</Item.Header>
+																<Item.Description>
+																	<em>
+																		{ticket.event_logs[ticket.event_logs.length - 1].status} by{' '}
+																		{ticket.event_logs[ticket.event_logs.length - 1].by.name}
+																	</em>
+																</Item.Description>
+																<Item.Extra>
+																	<ActiveTicketButtons
+																		ticket={ticket}
+																		onButtonClick={this.props.reloadTickets}
+																	/>
+																</Item.Extra>
+															</Item.Content>
+														</Item>
+													</Item.Group>
+												</Table.Cell>
+											</Table.Row>
+										)
+									})}
+								</Table.Body>
+							</Table>
+						</Grid.Column>
+					</Grid>
 				)
 			} else {
 				return (

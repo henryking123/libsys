@@ -28,8 +28,8 @@ export class UserTickets extends Component {
 		const { data, activePage } = this.state
 
 		return (
-			<Grid centered columns={2}>
-				<Grid.Column>
+			<Grid centered columns={1}>
+				<Grid.Column width={10}>
 					{data.docs ? (
 						<React.Fragment>
 							<TicketList tickets={this.state.data.docs} />
@@ -46,13 +46,9 @@ export class UserTickets extends Component {
 									onPageChange={this.handlePaginationChange}
 									floated="right"
 								/>
-							) : (
-								''
-							)}
+							) : null}
 						</React.Fragment>
-					) : (
-						''
-					)}
+					) : null}
 				</Grid.Column>
 			</Grid>
 		)
