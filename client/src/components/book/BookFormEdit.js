@@ -112,7 +112,7 @@ class BookFormEdit extends Component {
 						primary
 						content="Update Book"
 					/>
-					<DeleteBookButton book_id={this.book_id} />
+					<DeleteBookButton book_id={this.book_id} book_title={this.state.title} />
 				</Form>
 			</React.Fragment>
 		)

@@ -80,7 +80,7 @@ class Book extends Component {
 
 						{this.props.auth.user.isAdmin ? (
 							<React.Fragment>
-								<DeleteBookButton book_id={book._id} floated="right" />
+								<DeleteBookButton book_id={book._id} book_title={title} floated="right" />
 								<Link to={`${book._id}/edit`}>
 									<Button
 										floated="right"
