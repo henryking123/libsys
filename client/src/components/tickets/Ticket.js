@@ -76,14 +76,16 @@ class Ticket extends Component {
 
 		if (!Object.keys(ticket).length) return <Loader active inline="centered" />
 
-		console.log(ticket)
 		return (
 			<Grid centered columns={1}>
 				<Grid.Column width={10}>
 					<Header as="h2">
 						Ticket #{ticket._id.slice(-7)} {this.renderLabel(ticket.sort_order, ticket.status)}
 						<Header.Subheader>
-							Borrower: <strong>{ticket.borrower.name}</strong>
+							Borrower:{' '}
+							<strong>
+								<Link to={`/profile/${ticket.borrower._id}`}>{ticket.borrower.name}</Link>
+							</strong>
 							<br />
 							Book:{' '}
 							<Link to={`/books/${ticket.book._id}`}>
