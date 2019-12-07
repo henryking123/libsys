@@ -88,7 +88,7 @@ router.get('/all/:sort_order', auth, admin, async (req, res) => {
 		res.send(tickets)
 	} catch (e) {
 		console.error(e.message)
-		res.status(500).send(e.message)
+		res.status(400).send(e.message)
 	}
 })
 
@@ -306,7 +306,7 @@ router.post('/decline', auth, admin, async (req, res) => {
 		res.send()
 	} catch (e) {
 		console.error(e.message)
-		res.status(500).send(e.message)
+		res.status(400).send(e.message)
 	}
 })
 

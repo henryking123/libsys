@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const Book = mongoose.model('Book')
+const Ticket = mongoose.model('Ticket')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
 
@@ -68,10 +69,6 @@ router.get('/:book_id', auth, async (req, res) => {
 	}
 })
 
-// @route 	GET /tickets/books/:book_id/
-// @desc 		Read details of a book
-// @access 	Admin, Students
-
 // @route 	POST /books
 // @desc 		Add new Book
 // @access 	Admin
@@ -124,34 +121,23 @@ router.delete('/:book_id', auth, admin, async (req, res) => {
 
 		if (!book) return res.status(400).json({ error: 'Book not found.' })
 
-		// Find active or pending tickets for current book, return tickets instead
-		await book
-			.populate({
-				path: 'borrowHistory',
-				select: ['borrower', 'from', 'to', 'status'],
-				match: {
-					status: { $in: ['pendingBorrow', 'active'] }
-				},
-				populate: {
-					path: 'borrower',
-					select: ['name', 'email', 'studentId', 'employeeId', 'isAdmin']
-				}
-			})
-			.execPopulate()
+		// Find active tickets for the book
+		// If there are active tickets, throw an error
+		// Otherwise, delete the book
+		const tickets = await Ticket.find({ book: req.params.book_id, sort_order: { $lt: 5 } })
 
-		if (book.borrowHistory.length > 0)
-			return res.status(400).json({
-				error:
-					'Please decline all pending borrow requests and make sure all books has been returned.',
-				tickets: book.borrowHistory
-			})
+		if (tickets.length > 0)
+			throw new Error(`There are active tickets associated with the book titled "${book.title}".`)
 
 		await book.remove()
 
-		res.send(book)
+		res.send({
+			header: 'Book has been successfully deleted.',
+			content: `Book named "${book.title}" was removed.`
+		})
 	} catch (e) {
 		console.error(e.message)
-		res.status(500).send('Server Error')
+		res.status(400).send(e.message)
 	}
 })
 

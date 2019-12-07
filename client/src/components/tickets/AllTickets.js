@@ -3,9 +3,6 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, Segment, Header, Item, Icon, Pagination } from 'semantic-ui-react'
 import axios from 'axios'
-import { connect } from 'react-redux'
-import { setAlert } from '../../actions/alert'
-import PropTypes from 'prop-types'
 import AdminTicketButtons from '../buttons/AdminTicketButtons'
 
 export class AllTickets extends Component {
@@ -134,8 +131,4 @@ export class AllTickets extends Component {
 	}
 }
 
-AllTickets.propTypes = {
-	setAlert: PropTypes.func.isRequired
-}
-
-export default connect(null, { setAlert })(AllTickets)
+export default AllTickets
