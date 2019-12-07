@@ -1,7 +1,7 @@
 // For admin listing all tickets
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, Segment, Header, Item, Button, Icon, Pagination } from 'semantic-ui-react'
+import { Menu, Segment, Header, Item, Icon, Pagination } from 'semantic-ui-react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { setAlert } from '../../actions/alert'

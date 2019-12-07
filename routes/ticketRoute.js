@@ -120,9 +120,15 @@ router.get('/:ticket_id', auth, async (req, res) => {
 // @access 	Admin
 router.get('/book/:book_id', auth, admin, async (req, res) => {
 	try {
-		const tickets = await Ticket.find({ book: req.params.book_id })
-			.select(['-event_logs', '-book'])
-			.sort({ sort_order: 1, updatedAt: -1 })
+		const tickets = await Ticket.paginate(
+			{ book: req.params.book_id },
+			{
+				sort: { sort_order: 1, updatedAt: -1 },
+				limit: 10,
+				page: req.query.page,
+				select: ['-event_logs', '-book']
+			}
+		)
 
 		if (!tickets) throw new Error('Invalid book')
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import moment from 'moment'
-import { Header, Grid, Label, Loader, Table, Icon, Button } from 'semantic-ui-react'
+import { Header, Grid, Label, Loader, Table } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
