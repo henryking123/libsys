@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Form } from 'semantic-ui-react'
+import { Form, Button } from 'semantic-ui-react'
 import { YearInput } from 'semantic-ui-calendar-react'
 import axios from 'axios'
 import PropTypes from 'prop-types'
+import DeleteBookButton from '../buttons/DeleteBookButton'
 
 class BookFormEdit extends Component {
 	constructor(props) {
@@ -34,7 +35,6 @@ class BookFormEdit extends Component {
 			loading: false,
 			min: quantity - available || 0
 		})
-		console.log(this.state.quantity, this.state.available)
 	}
 
 	handleChange = (e, { name, value }) => {
@@ -55,7 +55,6 @@ class BookFormEdit extends Component {
 	}
 
 	render() {
-		console.log(this.state.min)
 		return (
 			<React.Fragment>
 				<Form autoComplete="off" onSubmit={this.onSubmit} loading={this.state.loading}>
@@ -105,9 +104,15 @@ class BookFormEdit extends Component {
 						onChange={this.handleChange}
 						value={this.state.quantity}
 					/>
-					<Form.Button loading={this.state.loadingSubmit} primary>
-						Update Book
-					</Form.Button>
+					<Button
+						labelPosition="right"
+						icon="edit outline"
+						type="submit"
+						loading={this.state.loadingSubmit}
+						primary
+						content="Update Book"
+					/>
+					<DeleteBookButton book_id={this.book_id} />
 				</Form>
 			</React.Fragment>
 		)

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import PropTypes from 'prop-types'
-import { Loader, Item, Label, Grid, Header, Table } from 'semantic-ui-react'
+import { Loader, Item, Label, Grid, Header, Table, Button } from 'semantic-ui-react'
 import moment from 'moment'
 import ActiveTicketButtons from '../buttons/ActiveTicketButtons'
 import CartButtons from '../buttons/CartButtons'
+import DeleteBookButton from '../buttons/DeleteBookButton'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { reloadTickets } from '../../actions/auth'
@@ -141,8 +142,6 @@ class Book extends Component {
 	render() {
 		const { book, activeTicket } = this.state
 
-		console.log(this.state.tickets)
-
 		if (!Object.keys(book).length) return <Loader active inline="centered" />
 		const { title, author, yearPublished, available, description } = book
 		return (
@@ -172,6 +171,20 @@ class Book extends Component {
 							</Item>
 						</Item.Group>
 
+						{this.props.auth.user.isAdmin ? (
+							<React.Fragment>
+								<DeleteBookButton book_id={book._id} floated="right" />
+								<Link to={`${book._id}/edit`}>
+									<Button
+										floated="right"
+										icon="edit outline"
+										labelPosition="right"
+										content="Edit Details"
+										primary
+									/>
+								</Link>
+							</React.Fragment>
+						) : null}
 						{Object.keys(activeTicket).length && activeTicket.sort_order < 5 ? (
 							<ActiveTicketButtons ticket={activeTicket} onButtonClick={this.onButtonClick} />
 						) : (
