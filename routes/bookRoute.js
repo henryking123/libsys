@@ -12,7 +12,7 @@ const admin = require('../middleware/admin')
 router.get('/all', auth, async (req, res) => {
 	try {
 		const response = await Book.paginate(
-			{},
+			{ deleted: false },
 			{ sort: { createdAt: -1 }, limit: 5, page: req.query.page }
 		)
 		res.send(response)
@@ -32,7 +32,8 @@ router.get('/search', auth, async (req, res) => {
 				$or: [
 					{ title: { $regex: new RegExp(req.query.search), $options: 'i' } },
 					{ author: { $regex: new RegExp(req.query.search), $options: 'i' } }
-				]
+				],
+				deleted: false
 			},
 			{ sort: { available: -1 }, limit: 5, page: req.query.page }
 		)
@@ -117,9 +118,9 @@ router.patch('/:book_id', auth, admin, async (req, res) => {
 // @access 	Admin
 router.delete('/:book_id', auth, admin, async (req, res) => {
 	try {
-		const book = await Book.findById(req.params.book_id)
+		const book = await Book.findOne({ _id: req.params.book_id, deleted: false })
 
-		if (!book) return res.status(400).json({ error: 'Book not found.' })
+		if (!book) throw new Error(`Book not found.`)
 
 		// Find active tickets for the book
 		// If there are active tickets, throw an error

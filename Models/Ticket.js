@@ -13,7 +13,7 @@ const ticketSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
 			ref: 'Book',
-			autopopulate: { select: ['title', 'author'] }
+			autopopulate: { select: ['title', 'author', 'deleted'] }
 		},
 		from: {
 			type: Date

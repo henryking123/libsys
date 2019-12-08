@@ -51,7 +51,8 @@ class Book extends Component {
 		console.log(book)
 
 		if (!Object.keys(book).length) return <Loader active inline="centered" />
-		const { title, author, yearPublished, available, description } = book
+
+		const { title, author, yearPublished, available, description, deleted } = book
 		return (
 			<React.Fragment>
 				<Grid centered>
@@ -73,30 +74,41 @@ class Book extends Component {
 											{author ? <React.Fragment> by {author}</React.Fragment> : null}
 										</Header>
 									</Item.Header>
-									<Item.Description>{description}</Item.Description>
-									<Item.Extra>{this.renderAvailability(available)}</Item.Extra>
+									{deleted ? (
+										<Item.Description>
+											<Header as="h4">This book has been deleted.</Header>
+										</Item.Description>
+									) : (
+										<React.Fragment>
+											<Item.Description>{description}</Item.Description>
+											<Item.Extra>{this.renderAvailability(available)}</Item.Extra>
+										</React.Fragment>
+									)}
 								</Item.Content>
 							</Item>
 						</Item.Group>
-
-						{this.props.auth.user.isAdmin ? (
+						{deleted ? null : (
 							<React.Fragment>
-								<DeleteBookButton book_id={book._id} book_title={title} floated="right" />
-								<Link to={`${book._id}/edit`}>
-									<Button
-										floated="right"
-										icon="edit outline"
-										labelPosition="right"
-										content="Edit Details"
-										primary
-									/>
-								</Link>
+								{this.props.auth.user.isAdmin ? (
+									<React.Fragment>
+										<DeleteBookButton book_id={book._id} book_title={title} floated="right" />
+										<Link to={`${book._id}/edit`}>
+											<Button
+												floated="right"
+												icon="edit outline"
+												labelPosition="right"
+												content="Edit Details"
+												primary
+											/>
+										</Link>
+									</React.Fragment>
+								) : null}
+								{Object.keys(activeTicket).length && activeTicket.sort_order < 5 ? (
+									<ActiveTicketButtons ticket={activeTicket} onButtonClick={this.onButtonClick} />
+								) : (
+									<CartButtons book={book} />
+								)}
 							</React.Fragment>
-						) : null}
-						{Object.keys(activeTicket).length && activeTicket.sort_order < 5 ? (
-							<ActiveTicketButtons ticket={activeTicket} onButtonClick={this.onButtonClick} />
-						) : (
-							<CartButtons book={book} />
 						)}
 					</Grid.Column>
 				</Grid>

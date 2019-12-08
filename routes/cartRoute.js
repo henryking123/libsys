@@ -12,6 +12,12 @@ const User = mongoose.model('User')
 // @access 	Student, Admin
 router.get('/cart', auth, async (req, res) => {
 	try {
+		// If a book gets deleted, the item will be removed from the user's cart.
+		if (req.user.cart.some(({ deleted }) => deleted === true)) {
+			req.user.cart = req.user.cart.filter(({ deleted }) => deleted === false)
+			await req.user.save()
+		}
+
 		res.send(req.user.cart)
 	} catch (e) {
 		console.error(e.message)
@@ -30,7 +36,7 @@ router.post('/cart', auth, async (req, res) => {
 			if (found) throw new Error('Book is already in cart')
 		}
 		// Push to cart array
-		const book = await Book.findById(req.body.book_id)
+		const book = await Book.findOne({ _id: req.body.book_id, deleted: false })
 		req.user.cart.push(book)
 		await req.user.save()
 		res.send(req.user.cart)
@@ -61,7 +67,10 @@ router.post('/cart/remove', auth, async (req, res) => {
 router.post('/checkout', auth, async (req, res) => {
 	try {
 		// See if there's a book that's not available
-		const books = await Book.find({ _id: { $in: req.body.checkoutItems }, available: { $lt: 1 } })
+		const books = await Book.find({
+			_id: { $in: req.body.checkoutItems },
+			$or: [{ available: { $lt: 1 } }, { deleted: true }]
+		})
 		if (books.length > 0)
 			throw new Error(`The following books are not available: ${books.map((book) => book.title)}`)
 

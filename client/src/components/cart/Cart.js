@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Label, Item, Table, Checkbox, Button, Icon, Header } from 'semantic-ui-react'
-import { loadCart, removeFromCart, checkout } from '../../actions/cart'
+import { removeFromCart, checkout } from '../../actions/cart'
 import { loadUser } from '../../actions/auth'
 import { Link, withRouter } from 'react-router-dom'
 import moment from 'moment'
@@ -11,7 +11,6 @@ class Cart extends Component {
 	state = { checkedItems: {}, selectedAll: true, allowCheckout: false }
 
 	async componentDidMount() {
-		await this.props.loadCart()
 		await this.props.loadUser()
 		// Initializes all items into checkedItems with value of false
 		this.selectAll()
@@ -170,7 +169,6 @@ class Cart extends Component {
 }
 
 Cart.propTypes = {
-	loadCart: PropTypes.func.isRequired,
 	loadUser: PropTypes.func.isRequired,
 	removeFromCart: PropTypes.func.isRequired,
 	checkout: PropTypes.func.isRequired,
@@ -181,6 +179,4 @@ Cart.propTypes = {
 
 const mapStateToProps = ({ cart, auth }) => ({ cart, auth })
 
-export default connect(mapStateToProps, { loadCart, removeFromCart, checkout, loadUser })(
-	withRouter(Cart)
-)
+export default connect(mapStateToProps, { removeFromCart, checkout, loadUser })(withRouter(Cart))

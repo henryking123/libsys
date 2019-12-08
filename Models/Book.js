@@ -26,10 +26,12 @@ const bookSchema = new mongoose.Schema(
 			set: function(quantity) {
 				this.oldQuantity = this.quantity
 				return quantity
-			}
+			},
+			default: 0
 		},
 		available: {
-			type: Number
+			type: Number,
+			default: 0
 		},
 		editHistory: {
 			type: [editHistorySchema],

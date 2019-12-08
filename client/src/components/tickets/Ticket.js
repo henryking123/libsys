@@ -74,6 +74,8 @@ class Ticket extends Component {
 	render() {
 		const { ticket } = this.state
 
+		console.log(ticket)
+
 		if (!Object.keys(ticket).length) return <Loader active inline="centered" />
 
 		return (
@@ -88,9 +90,13 @@ class Ticket extends Component {
 							</strong>
 							<br />
 							Book:{' '}
-							<Link to={`/books/${ticket.book._id}`}>
+							{ticket.book.deleted ? (
 								<strong>{ticket.book.title}</strong>
-							</Link>{' '}
+							) : (
+								<Link to={`/books/${ticket.book._id}`}>
+									<strong>{ticket.book.title}</strong>
+								</Link>
+							)}{' '}
 							{ticket.book.author ? (
 								<React.Fragment>
 									by <strong>{ticket.book.author}</strong>
