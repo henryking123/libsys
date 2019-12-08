@@ -21,6 +21,9 @@ const Navbar = ({ loading, isAuthenticated, logoutUser, history, user }) => {
 						<Dropdown.Item as={Link} to="/users">
 							Users
 						</Dropdown.Item>
+						<Dropdown.Item as={Link} to="/books/add">
+							Add New Book
+						</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown>
 			</React.Fragment>
