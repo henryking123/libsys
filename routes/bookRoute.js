@@ -129,8 +129,22 @@ router.delete('/:book_id', auth, admin, async (req, res) => {
 		if (tickets.length > 0)
 			throw new Error(`There are active tickets associated with the book titled "${book.title}".`)
 
-		await book.remove()
-
+		// Remove all fields of book except for title, deleted, and editHistory
+		await Book.findOneAndUpdate(
+			{ _id: req.params.book_id },
+			{
+				$unset: {
+					yearPublished: 1,
+					author: 1,
+					cover: 1,
+					description: 1,
+					quantity: 1,
+					available: 1
+				},
+				$set: { deleted: true },
+				$push: { editHistory: { updatedBy: req.user.id } }
+			}
+		)
 		res.send({
 			header: 'Book has been successfully deleted.',
 			content: `Book named "${book.title}" was removed.`

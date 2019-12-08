@@ -48,6 +48,7 @@ class Book extends Component {
 
 	render() {
 		const { book, activeTicket } = this.state
+		console.log(book)
 
 		if (!Object.keys(book).length) return <Loader active inline="centered" />
 		const { title, author, yearPublished, available, description } = book

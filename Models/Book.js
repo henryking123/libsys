@@ -1,6 +1,18 @@
 const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2')
 
+const editHistorySchema = new mongoose.Schema({
+	updatedBy: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: 'User'
+	},
+	time: {
+		type: Date,
+		default: Date.now()
+	}
+})
+
 const bookSchema = new mongoose.Schema(
 	{
 		cover: { type: Buffer },
@@ -10,7 +22,6 @@ const bookSchema = new mongoose.Schema(
 		yearPublished: { type: Date },
 		quantity: {
 			type: Number,
-			default: 0,
 			// to save the previous value
 			set: function(quantity) {
 				this.oldQuantity = this.quantity
@@ -18,22 +29,17 @@ const bookSchema = new mongoose.Schema(
 			}
 		},
 		available: {
-			type: Number,
-			default: 0
+			type: Number
 		},
-		editHistory: [
-			{
-				updatedBy: {
-					type: mongoose.Schema.Types.ObjectId,
-					required: true,
-					ref: 'User'
-				},
-				time: {
-					type: Date,
-					default: Date.now()
-				}
-			}
-		]
+		editHistory: {
+			type: [editHistorySchema],
+			required: true
+		},
+		deleted: {
+			type: Boolean,
+			required: true,
+			default: false
+		}
 	},
 	{ timestamps: true }
 )

@@ -34,6 +34,8 @@ class Tickets extends Component {
 	render = () => {
 		const { tickets } = this.props
 
+		console.log(tickets)
+
 		if (tickets.length === 0)
 			return (
 				<Header as="h3" style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -54,7 +56,7 @@ class Tickets extends Component {
 					</Table.Header>
 
 					<Table.Body>
-						{tickets.map(({ book: { title }, sort_order, status, event_logs, _id }) => {
+						{tickets.map(({ book, sort_order, status, event_logs, _id }) => {
 							return (
 								<Table.Row key={_id}>
 									<Table.Cell>{this.ribbon(sort_order, status)}</Table.Cell>
@@ -63,7 +65,11 @@ class Tickets extends Component {
 											<Item.Content>
 												<Item.Header>
 													<Header as="h3">
-														<Link to={`/tickets/${_id}`}>{title}</Link>
+														{book ? (
+															<Link to={`/tickets/${_id}`}>{book.title}</Link>
+														) : (
+															'Deleted Book'
+														)}
 													</Header>
 												</Item.Header>
 												<Item.Description>

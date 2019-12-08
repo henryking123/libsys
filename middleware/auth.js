@@ -12,6 +12,7 @@ module.exports = async (req, res, next) => {
 
 		const decoded = jwt.verify(token, jwtSecret)
 		// Finding user and then populating the tickets, cart, and books field
+		// In cart: Do not include books that are deleted.
 		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token }).populate({
 			path: 'cart'
 		})
