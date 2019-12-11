@@ -113,10 +113,7 @@ class Cart extends Component {
 							<Table.Cell>
 								<Item.Group>
 									<Item>
-										<Item.Image
-											size="tiny"
-											src="https://react.semantic-ui.com/images/wireframe/image.png"
-										/>
+										<Item.Image size="tiny" src="/thumbnail.png" />
 
 										<Item.Content verticalAlign="middle">
 											<Item.Header>{title}</Item.Header>

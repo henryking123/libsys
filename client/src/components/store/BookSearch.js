@@ -6,7 +6,7 @@ import { Input, Icon, Pagination } from 'semantic-ui-react'
 class BookSearch extends Component {
 	state = { search: '', data: {}, activePage: 1 }
 
-	componentDidMount = async () => {
+	componentDidMount = () => {
 		this.search()
 	}
 

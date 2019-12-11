@@ -36,10 +36,7 @@ class BookList extends Component {
 			<Item.Group divided>
 				{this.props.books.map((book) => (
 					<Item key={book._id}>
-						<Item.Image
-							src="https://kbimages1-a.akamaihd.net/52c896b6-2750-4c3d-a844-0760f23117f9/353/569/90/False/how-to-study-smart-study-secrets-of-an-honors-student.jpg"
-							size="tiny"
-						/>
+						<Item.Image src="/thumbnail.png" size="tiny" />
 
 						<Item.Content verticalAlign="middle">
 							<Item.Header as={Link} to={`/books/${book._id}`}>

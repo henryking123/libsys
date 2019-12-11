@@ -13,12 +13,13 @@ router.get('/search', auth, admin, async (req, res) => {
 		const users = await User.find({
 			$or: [
 				{ name: { $regex: new RegExp(req.query.q), $options: 'i' } },
-				{ studentId: { $regex: new RegExp(req.query.q), $options: 'i' } }
+				{ studentId: { $regex: new RegExp(req.query.q), $options: 'i' } },
+				{ employeeId: { $regex: new RegExp(req.query.q), $options: 'i' } }
 			]
 		})
 			.limit(20)
 			.sort({ createdAt: 1 })
-			.select(['name', 'isAdmin', 'studentId', 'employeeId'])
+			.select(['name', 'isAdmin', 'studentId', 'employeeId', 'email'])
 
 		res.send(users)
 	} catch (e) {
