@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import List from './List'
+import BookList from './BookList'
 import { Input, Icon, Pagination } from 'semantic-ui-react'
 
-class Search extends Component {
+class BookSearch extends Component {
 	state = { search: '', data: {}, activePage: 1 }
 
 	componentDidMount = async () => {
@@ -48,7 +48,7 @@ class Search extends Component {
 				/>
 				{data.docs ? (
 					<React.Fragment>
-						<List books={data.docs} />
+						<BookList books={data.docs} />
 						{data.totalPages > 1 ? (
 							<Pagination
 								activePage={activePage}
@@ -74,4 +74,4 @@ class Search extends Component {
 	}
 }
 
-export default Search
+export default BookSearch

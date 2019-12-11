@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import Search from './components/store/Search'
+import BookSearch from './components/store/BookSearch'
+import UserSearch from './components/store/UserSearch'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import 'semantic-ui-css/semantic.min.css'
 
@@ -44,13 +45,14 @@ const App = () => {
 					<Switch>
 						<Route exact path="/register" component={Register} />
 						<Route exact path="/login" component={Login} />
-						<PrivateRoute exact path="/books" component={Search} />
+						<PrivateRoute exact path="/books" component={BookSearch} />
 						<PrivateRoute exact path="/cart" component={Cart} />
 						<AdminRoute exact path="/books/add" component={BookForm} />
 						<AdminRoute exact path="/books/:book_id/edit" component={BookFormEdit} />
 
 						<PrivateRoute exact path="/profile" component={User} />
 						<AdminRoute exact path="/profile/:user_id" component={User} />
+						<AdminRoute exact path="/users" component={UserSearch} />
 
 						<PrivateRoute exact path="/my_tickets" component={UserTickets} />
 						<PrivateRoute exact path="/my_books" component={UserBooks} />

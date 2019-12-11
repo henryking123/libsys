@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import CartButtons from '../buttons/CartButtons'
 
-class List extends Component {
+class BookList extends Component {
 	renderButton = (book) => {
 		if (this.props.auth.user.tickets.some((ticket) => ticket.book._id === book._id)) {
 			return <Button floated="right" primary content="Borrowed" />
@@ -64,7 +64,7 @@ class List extends Component {
 	}
 }
 
-List.propTypes = {
+BookList.propTypes = {
 	books: PropTypes.array.isRequired,
 	addToCart: PropTypes.func.isRequired,
 	removeFromCart: PropTypes.func.isRequired,
@@ -74,4 +74,4 @@ List.propTypes = {
 
 const mapStateToProps = ({ cart, auth }) => ({ cart, auth })
 
-export default connect(mapStateToProps, { addToCart, removeFromCart })(List)
+export default connect(mapStateToProps, { addToCart, removeFromCart })(BookList)

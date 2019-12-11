@@ -5,6 +5,28 @@ const User = mongoose.model('User')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
 
+// @route 	GET /user/search?q=query
+// @desc 	 	Get List of Users
+// @access 	Admin
+router.get('/search', auth, admin, async (req, res) => {
+	try {
+		const users = await User.find({
+			$or: [
+				{ name: { $regex: new RegExp(req.query.q), $options: 'i' } },
+				{ studentId: { $regex: new RegExp(req.query.q), $options: 'i' } }
+			]
+		})
+			.limit(20)
+			.sort({ createdAt: 1 })
+			.select(['name', 'isAdmin', 'studentId', 'employeeId'])
+
+		res.send(users)
+	} catch (e) {
+		console.error(e.message)
+		res.status(500).send(e.message)
+	}
+})
+
 // @route 	GET /user
 // @desc 	 	Get User Details
 // @access 	Registered User
