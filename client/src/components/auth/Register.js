@@ -70,6 +70,7 @@ class Register extends Component {
 						onChange={this.handleChange}
 						value={this.state.studentId}
 						placeholder="13B-2117"
+						required
 					/>
 					<Form.Input
 						label="Email"

@@ -65,11 +65,7 @@ class Tickets extends Component {
 											<Item.Content>
 												<Item.Header>
 													<Header as="h3">
-														{book.deleted ? (
-															<React.Fragment>{book.title}</React.Fragment>
-														) : (
-															<Link to={`/tickets/${_id}`}>{book.title}</Link>
-														)}
+														<Link to={`/tickets/${_id}`}>{book.title}</Link>
 													</Header>
 												</Item.Header>
 												<Item.Description>

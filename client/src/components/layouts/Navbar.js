@@ -16,10 +16,10 @@ const Navbar = ({ loading, isAuthenticated, logoutUser, history, user }) => {
 				<Dropdown item simple text="Admin">
 					<Dropdown.Menu>
 						<Dropdown.Item as={Link} to="/tickets">
-							Tickets
+							Manage Tickets
 						</Dropdown.Item>
 						<Dropdown.Item as={Link} to="/users">
-							Users
+							Search Users
 						</Dropdown.Item>
 						<Dropdown.Item as={Link} to="/books/add">
 							Add New Book
