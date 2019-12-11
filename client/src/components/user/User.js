@@ -19,6 +19,7 @@ class User extends Component {
 	}
 
 	render() {
+		console.log(this.state.user)
 		if (!this.props.match.params.user_id) {
 			// Pass user from redux instead
 			return (

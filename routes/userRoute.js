@@ -45,7 +45,14 @@ router.get('/', auth, async (req, res) => {
 // @access 	Registered User
 router.get('/:user_id', auth, admin, async (req, res) => {
 	try {
-		const user = await User.findById(req.params.user_id)
+		const user = await User.findById(req.params.user_id).populate({
+			path: 'tickets',
+			select: ['book', 'event_logs', 'sort_order', 'status'],
+			populate: {
+				path: 'event_logs.by',
+				select: ['name', 'isAdmin']
+			}
+		})
 		if (!user) throw new Error('User not found.')
 
 		res.send(user)
