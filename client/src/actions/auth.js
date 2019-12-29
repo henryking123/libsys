@@ -62,9 +62,8 @@ export const loginUser = (user, history) => async (dispatch) => {
 
 		dispatch({ type: LOGIN_SUCCESS, payload: res.data })
 
+		setAuthHeader(localStorage.token)
 		setTimeout(() => {
-			setAuthHeader(localStorage.token)
-
 			dispatch(loadUser())
 			history.push('/books')
 		}, 2000)
