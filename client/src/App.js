@@ -20,6 +20,7 @@ import Login from './components/auth/Login'
 import Alert from './components/layouts/Alert'
 import Navbar from './components/layouts/Navbar'
 import Landing from './components/layouts/Landing'
+import NotFound from './components/layouts/NotFound'
 import Cart from './components/cart/Cart'
 import User from './components/user/User'
 import AllTickets from './components/tickets/AllTickets'
@@ -61,6 +62,7 @@ const App = () => {
 						<AdminRoute exact path="/tickets" component={AllTickets} />
 						<PrivateRoute exact path="/tickets/:ticket_id" component={Ticket} />
 						<PrivateRoute exact path="/books/:book_id" component={Book} />
+						<Route path="/" component={NotFound} />
 					</Switch>
 				</div>
 			</Router>
