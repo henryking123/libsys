@@ -50,9 +50,9 @@ router.post('/cart', auth, async (req, res) => {
 // @desc 	 	Removing an item from cart
 // @access 	Student, Admin
 // Untested
-router.post('/cart/remove', auth, async (req, res) => {
+router.delete('/cart/remove/:book_id', auth, async (req, res) => {
 	try {
-		req.user.cart = req.user.cart.filter(({ _id }) => _id.toString() !== req.body.book_id)
+		req.user.cart = req.user.cart.filter(({ _id }) => _id.toString() !== req.params.book_id)
 		await req.user.save()
 		res.send(req.user.cart)
 	} catch (e) {

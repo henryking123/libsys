@@ -28,9 +28,7 @@ export const addToCart = (id) => async (dispatch) => {
 
 export const removeFromCart = (id) => async (dispatch) => {
 	try {
-		const config = { headers: { 'Content-Type': 'application/json' } }
-		const body = JSON.stringify({ book_id: id })
-		const res = await axios.post('/cart/remove', body, config)
+		const res = await axios.delete(`/cart/remove/${id}`)
 
 		dispatch({ type: REMOVE_FROM_CART, payload: res.data })
 		dispatch(setAlert({ header: 'Book has been removed from cart.' }, 'positive'))
