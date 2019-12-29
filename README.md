@@ -38,7 +38,7 @@ The following is the list of future features:
 
 <br>
 
-## Authors and acknowledgment
+## Acknowledgment
 
 <br>
 
