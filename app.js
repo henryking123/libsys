@@ -3,9 +3,9 @@ const app = express()
 app.use(express.json())
 
 // Run DB Setup
-require('./Models/Ticket')
-require('./Models/Book')
-require('./Models/User')
+require('./models/Ticket')
+require('./models/Book')
+require('./models/User')
 require('./db/mongoose')
 // Routes
 app.use('/user', require('./routes/userRoute'))
