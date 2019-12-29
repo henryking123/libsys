@@ -19,6 +19,7 @@ import Register from './components/auth/Register'
 import Login from './components/auth/Login'
 import Alert from './components/layouts/Alert'
 import Navbar from './components/layouts/Navbar'
+import Landing from './components/layouts/Landing'
 import Cart from './components/cart/Cart'
 import User from './components/user/User'
 import AllTickets from './components/tickets/AllTickets'
@@ -43,6 +44,7 @@ const App = () => {
 				<div style={{ paddingTop: '80px' }} className="ui container">
 					<Alert />
 					<Switch>
+						<Route exact path="/" component={Landing} />
 						<Route exact path="/register" component={Register} />
 						<Route exact path="/login" component={Login} />
 						<PrivateRoute exact path="/books" component={BookSearch} />

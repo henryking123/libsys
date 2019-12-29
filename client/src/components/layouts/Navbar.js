@@ -34,7 +34,7 @@ const Navbar = ({ loading, isAuthenticated, logoutUser, history, user }) => {
 	return (
 		<Menu fixed="top" inverted borderless>
 			<Container>
-				<Menu.Item header as={Link} to="/books">
+				<Menu.Item header as={Link} to="/">
 					<Image size="mini" src="/logo.png" style={{ marginRight: '1.5em' }} />
 					LibSys
 				</Menu.Item>
@@ -43,7 +43,7 @@ const Navbar = ({ loading, isAuthenticated, logoutUser, history, user }) => {
 					isAuthenticated ? (
 						<React.Fragment>
 							<Menu.Item as={Link} to="/books">
-								Home
+								Books
 							</Menu.Item>
 
 							<Menu.Item as={Link} to="/profile">
