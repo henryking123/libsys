@@ -28,11 +28,6 @@ JWT_SECRET=""
 
 <br>
 
-## Project Status
-This project has reached the minimum viable product. Further development has slowed down. 
-
-<br>
-
 ## Roadmap
 The following is the list of future features:
 * Uploading a photo for book cover and for user's profile photo (`Multer`)
@@ -41,3 +36,11 @@ The following is the list of future features:
 * SuperUser; SU is able to send out emails to add more administrators
 * Mobile responsive design
 
+<br>
+
+## Authors and acknowledgment
+
+<br>
+
+## Project Status
+This project has reached the minimum viable product. Further development has slowed down. 
