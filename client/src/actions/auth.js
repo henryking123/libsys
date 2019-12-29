@@ -62,10 +62,12 @@ export const loginUser = (user, history) => async (dispatch) => {
 
 		dispatch({ type: LOGIN_SUCCESS, payload: res.data })
 
-		setAuthHeader(localStorage.token)
+		setTimeout(() => {
+			setAuthHeader(localStorage.token)
 
-		dispatch(loadUser())
-		history.push('/books')
+			dispatch(loadUser())
+			history.push('/books')
+		}, 2000)
 	} catch (e) {
 		dispatch(setAlert({ header: 'Login failed.', content: e.response.data }, 'negative'))
 		dispatch({ type: LOGIN_FAIL })
