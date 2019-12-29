@@ -22,16 +22,12 @@ cd libsys
 npm install
 ```
 
-<br>
-
 ## Configure
 The configuration file can be created by user. `env-cmd` module loads `dev.env` file which should be found in `./config/dev.env`.
 ```
 MONGO_URI=""
 JWT_SECRET=""
 ```
-
-<br>
 
 ## Run
 ```
