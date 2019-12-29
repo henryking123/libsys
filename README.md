@@ -14,16 +14,28 @@ LibSys is written using the `MERN stack` (`MongoDB`, `ExpressJS`, `ReactJS`, and
 
 <br>
 
-## Installation and Setup Instructions
+## Install
 
+```
+git clone https://github.com/henryking123/libsys.git
+cd libsys
+npm install
+```
 
 <br>
 
-__Config File__
+## Configure
 The configuration file can be created by user. `env-cmd` module loads `dev.env` file which should be found in `./config/dev.env`.
 ```
 MONGO_URI=""
 JWT_SECRET=""
+```
+
+<br>
+
+## Run
+```
+npm run dev
 ```
 
 <br>
