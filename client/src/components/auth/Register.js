@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Form, Message, Icon, Button } from 'semantic-ui-react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link, withRouter, Redirect } from 'react-router-dom'
 import { setAlert } from '../../actions/alert'
 import PropTypes from 'prop-types'
 import { registerUser } from '../../actions/auth'
@@ -34,7 +34,7 @@ class Register extends Component {
 
 	render() {
 		// For redirecting when already logged in
-		// if (this.props.isAuthenticated) return <Redirect to="/books" />
+		if (this.props.isAuthenticated) return <Redirect to="/books" />
 
 		return (
 			<React.Fragment>

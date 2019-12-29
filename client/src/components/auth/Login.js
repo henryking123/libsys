@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Message, Button, Icon } from 'semantic-ui-react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link, withRouter, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { loginUser, logoutAll } from '../../actions/auth'
 import PropTypes from 'prop-types'
@@ -22,7 +22,7 @@ class Login extends Component {
 
 	render() {
 		// For redirecting when already logged in
-		// if (this.props.isAuthenticated) return <Redirect to="/books" />
+		if (this.props.isAuthenticated) return <Redirect to="/books" />
 
 		return (
 			<React.Fragment>
