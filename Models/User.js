@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { jwtSecret } = require('../config/keys')
 const mongooseAutopopulate = require('mongoose-autopopulate')
 const Ticket = mongoose.model('Ticket')
 
@@ -84,7 +83,7 @@ userSchema.methods.toJSON = function() {
 // Instance Method
 userSchema.methods.generateAuthToken = async function() {
 	const user = this
-	const token = jwt.sign({ _id: user._id.toString() }, jwtSecret)
+	const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
 
 	user.tokens = [...user.tokens, { token }]
 

@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const { jwtSecret } = require('../config/keys')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
 
@@ -10,7 +9,7 @@ module.exports = async (req, res, next) => {
 		// Verifying the token
 		if (!token) throw new Error()
 
-		const decoded = jwt.verify(token, jwtSecret)
+		const decoded = jwt.verify(token, process.env.JWT_SECRET)
 		// Finding user and then populating the tickets, cart, and books field
 		// In cart: Do not include books that are deleted.
 		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token }).populate({
