@@ -11,6 +11,7 @@ import {
 	RELOAD_TICKETS
 } from './types'
 import setAuthHeader from '../utils/setAuthHeader'
+import removeAuthHeader from '../utils/removeAuthHeader'
 import axios from 'axios'
 import { setAlert } from './alert'
 import { loadCart } from './cart'
@@ -42,8 +43,6 @@ export const registerUser = (newUser, history) => async (dispatch) => {
 
 		dispatch({ type: REGISTER_SUCCESS, payload: res.data })
 
-		setAuthHeader(localStorage.token)
-		// Get User's Cart
 		dispatch(loadUser())
 		history.push('/books')
 	} catch (e) {
@@ -62,7 +61,6 @@ export const loginUser = (user, history) => async (dispatch) => {
 
 		dispatch({ type: LOGIN_SUCCESS, payload: res.data })
 
-		setAuthHeader(res.data.token)
 		dispatch(loadUser())
 		history.push('/books')
 	} catch (e) {
@@ -77,7 +75,8 @@ export const logoutUser = (history) => async (dispatch) => {
 		await axios.get('/logout')
 		dispatch({ type: LOGOUT_USER })
 		dispatch({ type: EMPTY_CART })
-		history.push('/login')
+		removeAuthHeader()
+		history.push('/')
 	} catch (e) {
 		console.error(e.message)
 	}

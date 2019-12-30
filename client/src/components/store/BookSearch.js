@@ -22,7 +22,9 @@ class BookSearch extends Component {
 
 	async search() {
 		if (this.state.search === '') {
-			const res = await axios.get(`/books/all?page=${this.state.activePage}`)
+			const res = await axios.get(`/books/all?page=${this.state.activePage}`, {
+				headers: { 'x-auth-token': localStorage.token }
+			})
 			await this.setState({ data: res.data })
 		} else {
 			const res = await axios.get(

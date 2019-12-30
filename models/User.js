@@ -135,6 +135,8 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 	if (!isMatch) throw new Error('Invalid credentials')
 
+	await user.refreshTickets()
+
 	return user
 }
 
