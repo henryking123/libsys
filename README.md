@@ -2,7 +2,7 @@
 
 LibSys is a single page web application that was made for the purpose of borrowing and returning books, and keep track of the history.
 
-The app allows users to search for a specific book, issue a borrow and a return request, track their borrow history, and track their request ticket's history.
+The app allows users to register and login an account. Users are able to search for a specific book, issue a borrow and a return request, track their borrow history, and track their request ticket's history.
 
 It has an administrator functionality that allows admins to accept or decline borrow and return requests, edit and delete a book, and search for a specific user. LibSys records the borrow and edit history of each book, the ticket history of every user, and the history of the tickets as well.
 
